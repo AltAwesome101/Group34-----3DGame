@@ -17,20 +17,27 @@ public class MeleeAttack : MonoBehaviour
     void Awake()
     {
         inputActions = new PlayerInputActions();
-        
     }
 
     void OnEnable()
     {
-        inputActions.Enable();
+        // Enable the input map
+        inputActions.Player.Enable();
+
+        // Subscribe to melee action
         inputActions.Player.Melee.performed += OnMelee;
     }
+
     void OnDisable()
     {
-        inputActions.Disable();
+        // Unsubscribe to avoid memory leaks
+        inputActions.Player.Melee.performed -= OnMelee;
+
+        // Disable the input map
+        inputActions.Player.Disable();
     }
 
-    private void OnMelee(InputAction.CallbackContext ctx) 
+    private void OnMelee(InputAction.CallbackContext ctx)
     {
         PerformAttack();
     }

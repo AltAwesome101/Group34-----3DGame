@@ -23,6 +23,7 @@ public class RPGFPGameManager : MonoBehaviour
     [Header("UI Panels")]
     public GameObject panel;
     public GameObject settingsPanel;
+    public TextMeshProUGUI panelMessageText;
     public int totalKeysRequired = 3;
 
     [Header("UI Elements")]
@@ -37,22 +38,17 @@ public class RPGFPGameManager : MonoBehaviour
     public static event RestartRounds RoundComplete;
 
     public int health;
-    private int roundsSurvived;
-    private int currentRound;
+    private int currentRound = 1;
     private DamagePlayer playerDamage;
-    private TextMeshProUGUI panelText;
     public List<Spawners> spawner = new List<Spawners>();
 
     private PlayerInputActions inputActions;
-    private bool continuePressed = false;
-    private bool waitingForNextRound = false;
     private bool isPaused = false;
     private bool isGameOver = false;
 
     void Awake()
     {
         inputActions = new PlayerInputActions();
-        inputActions.Player.Shoot.performed += ctx => continuePressed = true;
     }
 
     void Start()
@@ -62,10 +58,9 @@ public class RPGFPGameManager : MonoBehaviour
         if (settingsPanel != null) settingsPanel.SetActive(false);
 
         playerDamage = GameObject.FindGameObjectWithTag("Player").GetComponent<DamagePlayer>();
-        panelText = panel.GetComponentInChildren<TextMeshProUGUI>();
 
         if (roundText != null)
-            roundText.text = $"Round: {roundsSurvived + 1}";
+            roundText.text = $"Round: {currentRound}";
 
         foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>())
         {
@@ -75,16 +70,12 @@ public class RPGFPGameManager : MonoBehaviour
             }
         }
 
-        // Button listeners
         if (tryAgainButton != null)
             tryAgainButton.onClick.AddListener(OnTryAgain);
-
         if (settingsButton != null)
             settingsButton.onClick.AddListener(OnSettings);
-
         if (quitButton != null)
             quitButton.onClick.AddListener(OnQuit);
-
         if (continueButton != null)
             continueButton.onClick.AddListener(OnContinue);
     }
@@ -101,39 +92,36 @@ public class RPGFPGameManager : MonoBehaviour
         if (health <= 0 && !isGameOver)
         {
             isGameOver = true;
-            ShowPanel($"Survived {roundsSurvived} Rounds", showContinue: false);
+            ShowPanel($"Survived {currentRound - 1} Rounds", showContinue: false);
             return;
         }
 
-        if (AllSpawnersDead() && !waitingForNextRound && !isGameOver)
+        // Check if round is complete
+        if (!isGameOver && AllSpawnersDead())
         {
-            waitingForNextRound = true;
-            roundsSurvived++;
-            ShowPanel($"Round {roundsSurvived} Finished!", showContinue: true);
+            StartNextRound();
+        }
+    }
+
+    private void StartNextRound()
+    {
+        currentRound++;
+
+        // Update UI
+        if (roundText != null)
+            roundText.text = $"Round: {currentRound}";
+
+        // Double enemy count for each spawner
+        foreach (var s in spawner)
+        {
+            var spawnerScript = s.go.GetComponent<EnemySpawner>();
+
+            spawnerScript.amount *= 2; // double enemies
+            spawnerScript.ResetRound(); // reset and resize pool
         }
 
-        if (waitingForNextRound && continuePressed && !isPaused)
-        {
-            continuePressed = false;
-            currentRound = roundsSurvived;
-            waitingForNextRound = false;
-            panel.SetActive(false);
-            Time.timeScale = 1;
 
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-
-            foreach (var s in spawner)
-            {
-                var spawnerScript = s.go.GetComponent<EnemySpawner>();
-                spawnerScript.amount += 1;
-            }
-
-            if (roundText != null)
-                roundText.text = $"Round: {currentRound + 1}";
-
-            RoundComplete?.Invoke();
-        }
+        RoundComplete?.Invoke();
     }
 
     private void TogglePauseMenu()
@@ -144,7 +132,7 @@ public class RPGFPGameManager : MonoBehaviour
 
         if (isPaused)
         {
-            ShowPanel("Game Paused", showContinue: true);
+            ShowPanel("Quit", showContinue: true);
         }
         else
         {
@@ -155,12 +143,16 @@ public class RPGFPGameManager : MonoBehaviour
     private void ShowPanel(string message, bool showContinue)
     {
         panel.SetActive(true);
-        panelText.text = message;
+        var panelText = panel.GetComponentInChildren<TextMeshProUGUI>();
+        if (panelText != null)
+            panelText.text = message;
+        if (panelMessageText != null)
+            panelMessageText.text = message;
+
         Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // Toggle button visibility
         if (continueButton != null)
             continueButton.gameObject.SetActive(showContinue);
         if (tryAgainButton != null)
@@ -187,7 +179,7 @@ public class RPGFPGameManager : MonoBehaviour
         foreach (var s in spawner)
         {
             EnemySpawner es = s.go.GetComponent<EnemySpawner>();
-            if (es.spawnsDead == false)
+            if (!es.spawnsDead)
                 return false;
         }
         return true;
@@ -236,3 +228,5 @@ public class RPGFPGameManager : MonoBehaviour
         inputActions.Disable();
     }
 }
+
+
