@@ -1,8 +1,8 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MeleeAttack : MonoBehaviour
 {
-    public float attackRange = 1.5f;
     public float attackRadius = 1f;
     public int damage = 1;
     public LayerMask enemyLayer;
@@ -10,30 +10,71 @@ public class MeleeAttack : MonoBehaviour
     public float attackCooldown = 0.5f;
     private float lastAttackTime = -100f;
 
-    void Update()
+    public GameObject hitEffectPrefab;
+
+    private PlayerInputActions inputActions;
+
+    void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.F) && Time.time >= lastAttackTime + attackCooldown)
+        inputActions = new PlayerInputActions();
+        
+    }
+
+    void OnEnable()
+    {
+        inputActions.Enable();
+        inputActions.Player.Melee.performed += OnMelee;
+    }
+    void OnDisable()
+    {
+        inputActions.Disable();
+    }
+
+    private void OnMelee(InputAction.CallbackContext ctx) 
+    {
+        PerformAttack();
+    }
+
+    private void PerformAttack()
+    {
+        if (Time.time >= lastAttackTime + attackCooldown)
         {
             Attack();
             lastAttackTime = Time.time;
         }
     }
 
-    void Attack()
+    private void Attack()
     {
-        Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRadius, enemyLayer);
-        foreach (Collider enemy in hitEnemies)
+        Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRadius, enemyLayer);
+        foreach (Collider obj in hitObjects)
         {
-            enemy.GetComponent<EnermyHealth>()?.TakeDamage(damage);
+            // Try to damage enemy
+            EnermyHealth enemyHealth = obj.GetComponent<EnermyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage, true);
+            }
+
+            // Try to destroy object with Destroyable script
+            Destroyable destroyable = obj.GetComponent<Destroyable>();
+            if (destroyable != null)
+            {
+                destroyable.RegisterHit();
+            }
+
+            // Optional: spawn effect
+            if (hitEffectPrefab != null)
+            {
+                Instantiate(hitEffectPrefab, obj.transform.position + Vector3.up * 1f, Quaternion.identity);
+            }
         }
     }
 
     void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;
-
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 }
-

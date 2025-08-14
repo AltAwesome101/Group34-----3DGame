@@ -4,14 +4,19 @@ public class KeyPickup : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.CompareTag("Player")) return;
+
+        InventoryManager inventory = other.GetComponent<InventoryManager>();
+        if (inventory == null)
         {
-            InventoryManager inventory = FindObjectOfType<InventoryManager>();
-            if (inventory != null)
-            {
-                inventory.AddKey();
-            }
-            Destroy(gameObject);
+            inventory = FindObjectOfType<InventoryManager>();
         }
+
+        if (inventory != null)
+        {
+            inventory.AddKey();
+        }
+
+        Destroy(gameObject);
     }
 }
