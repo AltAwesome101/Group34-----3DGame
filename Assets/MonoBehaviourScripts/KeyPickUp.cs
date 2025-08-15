@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class KeyPickup : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
@@ -16,7 +15,6 @@ public class KeyPickup : MonoBehaviour
         {
             inventory.AddKey();
         }
-
         Destroy(gameObject);
     }
 }

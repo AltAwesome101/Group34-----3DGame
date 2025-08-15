@@ -5,20 +5,26 @@ using UnityEngine.UI;
 public class DamagePlayer : MonoBehaviour
 {
     public TextMeshProUGUI healthPanel;
-    public GameObject roundCompletePanel; // Panel to show on death or wave end
+
+    public GameObject roundCompletePanel;
+    
     public int health = 100;
+
     public int maxHealth = 100;
+
     public Transform respawnPoint;
+
     public float fallThreshold = -7f;
 
     private Rigidbody rb;
+
     private bool isDead = false;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         ApplyDamage(0);
-        HidePanel(); // Hide panel at start
+        HidePanel();
     }
 
     private void Update()
@@ -55,8 +61,8 @@ public class DamagePlayer : MonoBehaviour
     void Die()
     {
         isDead = true;
-        ShowPanel(); // Show panel before respawn
-        Invoke("Respawn", 3f); // Delay respawn
+        ShowPanel(); 
+        Invoke("Respawn", 3f); 
     }
 
     void Respawn()
@@ -65,28 +71,33 @@ public class DamagePlayer : MonoBehaviour
         health = 50;
         UpdateUI();
         transform.position = respawnPoint.position;
-        HidePanel(); // Hide panel after respawn
+        HidePanel();
     }
 
     void UpdateUI()
     {
         if (healthPanel != null)
+        {
             healthPanel.text = "Health: " + health.ToString();
+        }
     }
 
     void ShowPanel()
     {
         if (roundCompletePanel != null)
+        {
             roundCompletePanel.SetActive(true);
+        }
     }
 
     void HidePanel()
     {
         if (roundCompletePanel != null)
+        {
             roundCompletePanel.SetActive(false);
+        }
     }
 
-    // Optional: Call this from your round manager to show the panel
     public void OnWaveComplete()
     {
         ShowPanel();

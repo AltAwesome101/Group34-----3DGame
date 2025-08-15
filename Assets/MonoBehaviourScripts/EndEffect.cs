@@ -3,12 +3,8 @@ using UnityEngine;
 public class EndEffect : MonoBehaviour
 {
     private float timer;
-    public float maxTime = 1.0f;
-    void Start()
-    {
-        
-    }
 
+    public float maxTime = 1.0f;
     void Update()
     {
         timer += Time.deltaTime;

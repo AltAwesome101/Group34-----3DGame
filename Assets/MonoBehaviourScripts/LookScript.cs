@@ -16,14 +16,19 @@ public class LookScript : MonoBehaviour
     public float bobAmplitude = 0.05f;
 
     private Vector2 rotation;
+
     private Vector2 currentLookRot;
+
     private Vector2 rotationV = Vector2.zero;
 
     private float bobTimer = 0f;
+
     private Vector3 startLocalPos;
+
     private Rigidbody playerRb;
 
     private PlayerInputActions inputActions;
+
     private Vector2 mouseDelta;
 
     void Awake()
@@ -32,7 +37,6 @@ public class LookScript : MonoBehaviour
         inputActions.Player.Look.performed += ctx => mouseDelta = ctx.ReadValue<Vector2>();
         inputActions.Player.Look.canceled += ctx => mouseDelta = Vector2.zero;
     }
-
     void Start()
     {
         Player = transform.parent.gameObject;
@@ -40,21 +44,21 @@ public class LookScript : MonoBehaviour
         playerRb = Player.GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
     }
-
     void Update()
     {
         ApplyLookRotation();
         HandleHeadBobbing();
     }
-
     void ApplyLookRotation()
     {
         rotation.y += mouseDelta.y * lookSensitivity;
+
         rotation.y = Mathf.Clamp(rotation.y, minClamp, maxClamp);
 
         Player.transform.Rotate(Vector3.up * mouseDelta.x * lookSensitivity);
 
         currentLookRot.y = Mathf.SmoothDamp(currentLookRot.y, rotation.y, ref rotationV.y, lookSmoothDamp);
+
         transform.localEulerAngles = new Vector3(-currentLookRot.y, 0, 0);
     }
 
@@ -76,12 +80,10 @@ public class LookScript : MonoBehaviour
             transform.localPosition = Vector3.Lerp(transform.localPosition, startLocalPos, Time.deltaTime * 5f);
         }
     }
-
     private void OnEnable()
     {
         inputActions.Enable();
     }
-
     private void OnDisable()
     {
         inputActions.Disable();

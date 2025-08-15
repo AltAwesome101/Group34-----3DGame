@@ -8,7 +8,6 @@ public class EnermyHealth : MonoBehaviour
 
     private void OnEnable()
     {
-        // Reset enemy state when re-enabled
         hitNumber = 0;
         isDead = false;
     }
@@ -32,7 +31,6 @@ public class EnermyHealth : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
-
     private void OnCollisionEnter(Collision other)
     {
         if (other.transform.CompareTag("bullet"))

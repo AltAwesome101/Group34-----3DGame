@@ -1,6 +1,4 @@
-
 using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,20 +16,25 @@ public class Enemy
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject spawn; // Enemy prefab
-    public int amount = 1;   // How many to spawn
-    public float delaySpawn = 1f; // Delay between spawns
+    public GameObject spawn;
+    
+    public int amount = 1;
+    
+    public float delaySpawn = 1f;
+
     public bool spawnsDead;
 
     private int getAmount;
+
     private float timer;
+
     private int spawned;
 
     public List<Enemy> enemies = new List<Enemy>();
 
     private void Start()
     {
-        ResetRound(); // Will create initial pool
+        ResetRound();
     }
 
     public void ResetRound()
@@ -41,7 +44,6 @@ public class EnemySpawner : MonoBehaviour
         spawned = 0;
         timer = 0;
 
-        // Always ensure pool matches amount
         while (enemies.Count < getAmount)
         {
             GameObject instance = Instantiate(spawn, transform.position, Quaternion.identity);
@@ -50,7 +52,6 @@ public class EnemySpawner : MonoBehaviour
             enemies.Add(new Enemy(instance, false));
         }
 
-        // Disable all enemies before starting
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].go.SetActive(false);
@@ -62,7 +63,6 @@ public class EnemySpawner : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // Spawn enemies over time
         if (timer >= delaySpawn && spawned < getAmount)
         {
             timer = 0f;
@@ -75,7 +75,6 @@ public class EnemySpawner : MonoBehaviour
             spawned++;
         }
 
-        // Check if all spawned enemies are dead
         int deadCount = 0;
         for (int i = 0; i < Mathf.Min(getAmount, enemies.Count); i++)
         {
@@ -94,7 +93,7 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SetKinematic(int id)
     {
-        yield return null; // Wait 1 frame to ensure physics is set up
+        yield return null;
 
         Rigidbody rb = enemies[id].go.GetComponent<Rigidbody>();
         if (rb != null)

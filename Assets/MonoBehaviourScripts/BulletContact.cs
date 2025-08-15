@@ -12,14 +12,12 @@ public class BulletContact : MonoBehaviour
 
         Instantiate(particle, pos, rot);
 
-        // Check if the object hit has a Destroyable script
         Destroyable destroyable = other.gameObject.GetComponent<Destroyable>();
         if (destroyable != null)
         {
             destroyable.RegisterHit();
         }
 
-        // Destroy the bullet
         Destroy(gameObject);
     }
 }

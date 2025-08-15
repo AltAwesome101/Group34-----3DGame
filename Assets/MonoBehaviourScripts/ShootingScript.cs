@@ -1,10 +1,18 @@
+//Title: Shooting Mechanics In Unity
+//Author: Kieran Coughlan
+//Date: 12-04-2016
+//Code Version: New-input System
+//Availability:https://coderdojoathenry.org/2016/04/12/shooting-mechanics-in-unity/
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class ShootingScript : MonoBehaviour
 {
     public GameObject bullet;
+
     public Transform firePoint;
+
     public float fireInterval = 0.3f;
 
     [Header("Shotgun Settings")]
@@ -14,6 +22,7 @@ public class ShootingScript : MonoBehaviour
     public float dualShotOffset = 0.2f;
 
     private InventoryManager inventory;
+
     private PlayerInputActions inputActions;
 
     public enum GunType { Standard, DualShot, Shotgun }
@@ -75,7 +84,6 @@ public class ShootingScript : MonoBehaviour
         var instance = Instantiate(bullet, spawnPos, Quaternion.LookRotation(direction));
         Destroy(instance, 4f);
     }
-
     private void OnEnable() => inputActions.Enable();
     private void OnDisable() => inputActions.Disable();
 }

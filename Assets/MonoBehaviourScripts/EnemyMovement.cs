@@ -4,11 +4,17 @@ using UnityEngine.AI;
 public class EnemyMovement : MonoBehaviour
 {
     public Transform goal;
+
     private NavMeshAgent agent;
+
     public float kick = 2.0f;
+
     public float knockbackTime = 1;
+
     private bool hit;
+
     private ContactPoint contact;
+
     private float timer;
     void Start()
     {
@@ -40,7 +46,6 @@ public class EnemyMovement : MonoBehaviour
             }
         }
     }
-
     private void OnCollisionEnter(Collision other)
     {
         if (other.transform.CompareTag("bullet")) 

@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿//Title: Wave System for Enemy Spawning
+//Author: Phiktional
+//Date: 03-08-2025
+//Code Version: New-input System
+//Availability: https://medium.com/@phiktional/implementing-a-wave-system-for-enemy-spawning-in-unity-ebf820e7a936
+
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -9,6 +15,7 @@ using UnityEngine.EventSystems;
 public class Spawners
 {
     public GameObject go;
+
     public bool active;
 
     public Spawners(GameObject newGo, bool newBool)
@@ -35,15 +42,21 @@ public class RPGFPGameManager : MonoBehaviour
     public Button firstSelectedButton;
 
     public delegate void RestartRounds();
+
     public static event RestartRounds RoundComplete;
 
     public int health;
+
     private int currentRound = 1;
+
     private DamagePlayer playerDamage;
+
     public List<Spawners> spawner = new List<Spawners>();
 
     private PlayerInputActions inputActions;
+
     private bool isPaused = false;
+
     private bool isGameOver = false;
 
     void Awake()
@@ -88,15 +101,12 @@ public class RPGFPGameManager : MonoBehaviour
         }
 
         health = playerDamage.health;
-
         if (health <= 0 && !isGameOver)
         {
             isGameOver = true;
             ShowPanel($"Survived {currentRound - 1} Rounds", showContinue: false);
             return;
         }
-
-        // Check if round is complete
         if (!isGameOver && AllSpawnersDead())
         {
             StartNextRound();
@@ -106,24 +116,20 @@ public class RPGFPGameManager : MonoBehaviour
     private void StartNextRound()
     {
         currentRound++;
-
-        // Update UI
         if (roundText != null)
+        {
             roundText.text = $"Round: {currentRound}";
+        }
 
-        // Double enemy count for each spawner
         foreach (var s in spawner)
         {
             var spawnerScript = s.go.GetComponent<EnemySpawner>();
 
-            spawnerScript.amount *= 2; // double enemies
-            spawnerScript.ResetRound(); // reset and resize pool
+            spawnerScript.amount *= 2;
+            spawnerScript.ResetRound();
         }
-
-
         RoundComplete?.Invoke();
     }
-
     private void TogglePauseMenu()
     {
         if (isGameOver) return;
@@ -154,16 +160,25 @@ public class RPGFPGameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         if (continueButton != null)
+        {
             continueButton.gameObject.SetActive(showContinue);
+        }
         if (tryAgainButton != null)
+        {
             tryAgainButton.gameObject.SetActive(!showContinue);
+        }
         if (settingsButton != null)
+        {
             settingsButton.gameObject.SetActive(true);
+        }
         if (quitButton != null)
+        {
             quitButton.gameObject.SetActive(true);
-
+        }
         if (firstSelectedButton != null)
+        {
             EventSystem.current.SetSelectedGameObject(firstSelectedButton.gameObject);
+        }
     }
 
     private void HidePanel()
@@ -180,7 +195,9 @@ public class RPGFPGameManager : MonoBehaviour
         {
             EnemySpawner es = s.go.GetComponent<EnemySpawner>();
             if (!es.spawnsDead)
+            {
                 return false;
+            }
         }
         return true;
     }
@@ -190,7 +207,6 @@ public class RPGFPGameManager : MonoBehaviour
         Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
         Scene current = SceneManager.GetActiveScene();
         SceneManager.LoadScene(current.name);
     }
