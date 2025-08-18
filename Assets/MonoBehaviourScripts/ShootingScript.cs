@@ -6,14 +6,15 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class ShootingScript : MonoBehaviour
 {
-    public GameObject bullet;
-
+    [Header("Bullet & Fire Settings")]
+    public GameObject bulletPrefab;
     public Transform firePoint;
-
     public float fireInterval = 0.3f;
+    public int poolSize = 50;
 
     [Header("Shotgun Settings")]
     public float shotgunSpreadAngle = 30f;
@@ -26,13 +27,23 @@ public class ShootingScript : MonoBehaviour
     private PlayerInputActions inputActions;
 
     public enum GunType { Standard, DualShot, Shotgun }
+
     public GunType currentGun = GunType.Standard;
+
     private float lastShotTime = 0f;
+
+    private Queue<GameObject> bulletPool = new Queue<GameObject>();
 
     void Awake()
     {
         inputActions = new PlayerInputActions();
         inputActions.Player.Shoot.performed += ctx => Fire();
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(bulletPrefab);
+            obj.SetActive(false);
+            bulletPool.Enqueue(obj);
+        }
     }
 
     void Start()
@@ -81,9 +92,19 @@ public class ShootingScript : MonoBehaviour
     void SpawnBullet(Vector3 direction, Vector3? customPos = null)
     {
         Vector3 spawnPos = customPos ?? firePoint.position;
-        var instance = Instantiate(bullet, spawnPos, Quaternion.LookRotation(direction));
-        Destroy(instance, 4f);
+        GameObject bullet = bulletPool.Count > 0 ? bulletPool.Dequeue() : Instantiate(bulletPrefab);
+        bullet.transform.SetPositionAndRotation(spawnPos, Quaternion.LookRotation(direction));
+        bullet.SetActive(true);
+        StartCoroutine(DisableAfterTime(bullet, 4f));
     }
+
+    System.Collections.IEnumerator DisableAfterTime(GameObject bullet, float time)
+    {
+        yield return new WaitForSeconds(time);
+        bullet.SetActive(false);
+        bulletPool.Enqueue(bullet);
+    }
+
     private void OnEnable() => inputActions.Enable();
     private void OnDisable() => inputActions.Disable();
 }
