@@ -306,7 +306,7 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
+  m_TargetDisplay: 3
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
@@ -351,7 +351,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7978083556201080174}
   - component: {fileID: 5692832444371331274}
-  - component: {fileID: 7795746285567979084}
   m_Layer: 6
   m_Name: Map
   m_TagString: Untagged
@@ -415,7 +414,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 732c4216da6696b458e840c4e5ab6c0e, type: 2}
   m_TargetDisplay: 1
   m_TargetEye: 3
   m_HDR: 1
@@ -425,14 +424,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &7795746285567979084
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3913443755544173001}
-  m_Enabled: 1
 --- !u!1 &6179639576167673130
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,7 +489,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.08, y: 1.5, z: 0.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7978083556201080174}
@@ -616,6 +607,18 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 3c213c74-3cc9-4479-8a73-01d880aa1e2a
     m_ActionName: 'Player/Melee[/Keyboard/f]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b3ee6ddd-c66a-45d7-84fe-66b9be5c157a
+    m_ActionName: 'Player/PickUpObject[/Keyboard/v]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7685024c-2fbf-4b7a-ae69-b380912d93ba
+    m_ActionName: 'Player/ThrowObject[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dbe3d779-d139-4270-81ef-856fded6a059
+    m_ActionName: 'Player/HelpScreen[/Keyboard/tab]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Mouse&KeyBoard
   m_DefaultActionMap: Player
@@ -771,9 +774,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2db822b18efbd4ea8a7bccde18b3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 116189901335226962, guid: 718804ec0a1e36541995086f22f2e4cb, type: 3}
+  bulletPrefab: {fileID: 0}
   firePoint: {fileID: 913170420681322840}
   fireInterval: 0.3
+  poolSize: 50
   shotgunSpreadAngle: 30
   dualShotOffset: 0.2
   currentGun: 0
