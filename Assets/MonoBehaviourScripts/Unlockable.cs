@@ -2,50 +2,76 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 
-public class UnlockableObject : MonoBehaviour
+[RequireComponent(typeof(Collider))]
+public class UnlockableDoor : MonoBehaviour
 {
+    [Header("UI")]
     public TextMeshProUGUI promptText;
-    private bool isPlayerNearby = false;
+
+    [Header("Door Settings")]
+    public float openAngle = 90f;    // total rotation in degrees
+    public float openSpeed = 90f;    // degrees per second
+
+    [Header("Artificial Hinge")]
+    public Vector3 hingeOffset = new Vector3(-2.0f, 0f, -0.4f);
+    // Relative to door center; left edge = -0.5 if width = 1
+
+    private bool isPlayerNearby;
+    private bool isOpen;
     private InventoryManager inventory;
 
-    void Start()
+    private float currentAngle = 0f;
+    private Vector3 hingePoint;
+
+    private void Start()
     {
-        if (promptText != null)
-            promptText.text = "";
+        // Calculate world position of hinge
+        hingePoint = transform.position + transform.TransformVector(hingeOffset);
+
+        if (promptText) promptText.text = "";
     }
 
-    void Update()
+    private void Update()
     {
-        if (isPlayerNearby && Keyboard.current.eKey.wasPressedThisFrame)
+        if (isPlayerNearby && !isOpen && Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (inventory != null && inventory.keys > 0)
             {
                 inventory.UseKey();
                 promptText.text = "";
-                Destroy(gameObject);
+                isOpen = true;
             }
+        }
+
+        // Animate door rotation around hinge
+        if (isOpen && currentAngle < openAngle)
+        {
+            float delta = openSpeed * Time.deltaTime;
+            if (currentAngle + delta > openAngle)
+                delta = openAngle - currentAngle;
+
+            transform.RotateAround(hingePoint, Vector3.up, delta);
+            currentAngle += delta;
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
         isPlayerNearby = true;
-        inventory = other.GetComponent<InventoryManager>();
-        if (inventory == null)
-            inventory = FindObjectOfType<InventoryManager>();
+        inventory = other.GetComponent<InventoryManager>() ??
+                    FindObjectOfType<InventoryManager>();
 
-        if (promptText != null)
-            promptText.text = "Press E to unlock";
+        if (!isOpen && promptText != null)
+            promptText.text = "Press [E] to unlock";
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
         isPlayerNearby = false;
-        if (promptText != null)
-            promptText.text = "";
+        if (promptText != null) promptText.text = "";
     }
 }

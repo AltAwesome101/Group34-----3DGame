@@ -1,16 +1,7 @@
-//Title: How to Move a Player in Unity
-//Author: Hayes, A
-//Date: 20-04-2025
-//Code Version: New-input System
-//Availability:Modules Tab, Lecture Slides
-
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
-
-[RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(AudioSource))]
 public class MovementScript : MonoBehaviour
 {
     [Header("Movement Settings")]
@@ -23,17 +14,22 @@ public class MovementScript : MonoBehaviour
     public Vector3 crouchScale = new Vector3(1f, 0.5f, 1f);
     public Vector3 normalScale = new Vector3(1f, 1f, 1f);
 
-    private bool isCrouching = false;
+    [Header("Collision Audio")]
+    public AudioClip collisionSound;
+    public float collisionThreshold = 1f; // seconds
+    public float capsuleYOffset = 0.2f;    // vertical offset for capsule cast
 
+    private bool isCrouching = false;
     private bool isSprinting = false;
 
     private Vector2 moveInput;
-
     private Rigidbody rb;
-
     private CapsuleCollider col;
-
     private PlayerInputActions inputActions;
+    private AudioSource audioSource;
+
+    private float blockedTime = 0f;
+    private bool soundPlayed = false;
 
     private void Awake()
     {
@@ -48,59 +44,84 @@ public class MovementScript : MonoBehaviour
         inputActions.Player.Sprint.canceled += ctx => isSprinting = false;
     }
 
-    void Start()
+    private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
+        audioSource = GetComponent<AudioSource>();
+
+        rb.freezeRotation = true; // prevent tipping over
         transform.localScale = normalScale;
     }
-    void Update()
+
+    private void FixedUpdate()
     {
         float currentSpeed = speed;
+        if (isSprinting) currentSpeed *= sprintMultiplier;
+        if (isCrouching) currentSpeed *= crouchSpeedMultiplier;
 
-        if (isSprinting)
+        Vector3 direction = transform.TransformDirection(new Vector3(moveInput.x, 0, moveInput.y));
+        Vector3 step = direction * currentSpeed * Time.fixedDeltaTime;
+
+        Vector3 bottom = col.bounds.center - Vector3.up * (col.height / 2 - col.radius) + Vector3.up * capsuleYOffset;
+        Vector3 top = col.bounds.center + Vector3.up * (col.height / 2 - col.radius) + Vector3.up * capsuleYOffset;
+
+        float skin = 0.02f;                        // distance buffer
+        float radius = col.radius * 0.95f;         // slightly shrink for smoother edges
+
+        bool hit = Physics.CapsuleCast(
+            top,
+            bottom,
+            radius,
+            step.normalized,
+            step.magnitude + skin,
+            ~0,
+            QueryTriggerInteraction.Ignore);
+
+        if (!hit)
         {
-            currentSpeed *= sprintMultiplier;
+            rb.MovePosition(rb.position + step);
+            blockedTime = 0f;
+            soundPlayed = false;
         }
-
-        if (isCrouching)
+        else
         {
-            currentSpeed *= crouchSpeedMultiplier;
+            blockedTime += Time.fixedDeltaTime;
+            if (!soundPlayed && blockedTime >= collisionThreshold)
+            {
+                if (collisionSound) audioSource.PlayOneShot(collisionSound);
+                soundPlayed = true;
+            }
         }
-
-        Vector3 direction = new Vector3(moveInput.x, 0, moveInput.y);
-
-        transform.Translate(direction * currentSpeed * Time.deltaTime, Space.Self);
     }
+
 
     private void TryJump()
     {
-        if (isGrounded() && !isCrouching)
+        if (IsGrounded() && !isCrouching)
         {
             rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
         }
     }
+
     private void StartCrouch()
     {
         isCrouching = true;
         transform.localScale = crouchScale;
     }
+
     private void StopCrouch()
     {
         isCrouching = false;
         transform.localScale = normalScale;
     }
-    private bool isGrounded()
+
+    private bool IsGrounded()
     {
         return Physics.Raycast(transform.position, Vector3.down, col.bounds.extents.y + 0.1f);
     }
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
-    private void OnDisable()
-    {
-        inputActions.Disable();
-    }
+
+    private void OnEnable() => inputActions.Enable();
+    private void OnDisable() => inputActions.Disable();
 }

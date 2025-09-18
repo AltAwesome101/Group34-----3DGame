@@ -88,4 +88,14 @@ public class LookScript : MonoBehaviour
     {
         inputActions.Disable();
     }
+    public void SetLookSensitivity(float value)
+    {
+        lookSensitivity = value;
+    }
+
+    public void SetHeadBobAmount(float value)
+    {
+        bobAmplitude = value;
+    }
+
 }
