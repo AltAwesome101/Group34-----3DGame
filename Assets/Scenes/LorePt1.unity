@@ -179,7 +179,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 9.389398
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -206,7 +206,7 @@ Transform:
   m_GameObject: {fileID: 206290723}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: -137, y: 532, z: -1442.379}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -260,7 +260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 832.3628, y: -489.94418}
+  m_AnchoredPosition: {x: 100, y: -203}
   m_SizeDelta: {x: 166.7255, y: 63.6279}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &572066709
@@ -624,8 +624,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48, y: 0.000021219}
-  m_SizeDelta: {x: 978.4216, y: 1075.5164}
+  m_AnchoredPosition: {x: -18.979, y: 20.13}
+  m_SizeDelta: {x: 457.239, y: 617.118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1363638043
 MonoBehaviour:
@@ -700,8 +700,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4.4835205, y: 1.1209106}
-  m_SizeDelta: {x: 103.1259, y: 69.4974}
+  m_AnchoredPosition: {x: -0.000061035156, y: -16.814026}
+  m_SizeDelta: {x: -0.0001, y: 33.628}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1869387306
 MonoBehaviour:
@@ -809,8 +809,8 @@ Canvas:
   m_GameObject: {fileID: 2058369204}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 206290725}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -822,7 +822,7 @@ Canvas:
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_TargetDisplay: 0
+  m_TargetDisplay: 3
 --- !u!224 &2058369208
 RectTransform:
   m_ObjectHideFlags: 0

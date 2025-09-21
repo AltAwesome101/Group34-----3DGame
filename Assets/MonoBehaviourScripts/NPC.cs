@@ -111,7 +111,7 @@ public class NPC : MonoBehaviour
         }
         else if (questStage == 0)
         {
-            return $"Collect {totalKeys} keys.\n(You Currently Have: {keys})";
+            return $"Collect {totalKeys} keys.\n(You Currently Have: {keys}) These Task are Optional by the Way, Return to me when Completed";
         }
         else if (questStage == 1)
         {
