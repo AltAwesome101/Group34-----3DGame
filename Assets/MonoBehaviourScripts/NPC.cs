@@ -111,7 +111,7 @@ public class NPC : MonoBehaviour
         }
         else if (questStage == 0)
         {
-            return $"Collect {totalKeys} keys.\n(You Currently Have: {keys}) These Task are Optional by the Way, Return to me when Completed";
+            return $"SHE has been awakened and SHE will not spare those who get in her way. You must save the chosen one who has awakened her before she uses their body as a host. Collect {totalKeys} keys.\n(You Currently Have: {keys}) to unlock the doors.";
         }
         else if (questStage == 1)
         {
