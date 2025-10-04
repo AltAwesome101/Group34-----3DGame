@@ -9,25 +9,26 @@ public class UnlockableDoor : MonoBehaviour
     public TextMeshProUGUI promptText;
 
     [Header("Door Settings")]
-    public float openAngle = 90f;    // total rotation in degrees
-    public float openSpeed = 90f;    // degrees per second
+    public float openAngle = 90f;
+    public float openSpeed = 90f;
 
     [Header("Artificial Hinge")]
     public Vector3 hingeOffset = new Vector3(-2.0f, 0f, -0.4f);
-    // Relative to door center; left edge = -0.5 if width = 1
+
 
     private bool isPlayerNearby;
+
     private bool isOpen;
+
     private InventoryManager inventory;
 
     private float currentAngle = 0f;
+
     private Vector3 hingePoint;
 
     private void Start()
     {
-        // Calculate world position of hinge
         hingePoint = transform.position + transform.TransformVector(hingeOffset);
-
         if (promptText) promptText.text = "";
     }
 
@@ -43,7 +44,6 @@ public class UnlockableDoor : MonoBehaviour
             }
         }
 
-        // Animate door rotation around hinge
         if (isOpen && currentAngle < openAngle)
         {
             float delta = openSpeed * Time.deltaTime;
@@ -73,5 +73,15 @@ public class UnlockableDoor : MonoBehaviour
 
         isPlayerNearby = false;
         if (promptText != null) promptText.text = "";
+    }
+
+    public void Unlock()
+    {
+        if (!isOpen)
+        {
+            isOpen = true;
+            if (promptText != null) promptText.text = "";
+            // any other immediate effects you want on unlock (sound, particles) can go here
+        }
     }
 }
