@@ -18938,7 +18938,7 @@ MonoBehaviour:
   settingsPanelFader: {fileID: 1952786870}
   helpPanelFader: {fileID: 1485365139}
   screenFader: {fileID: 1004704560}
-  levelSceneName: Level2
+  levelSceneName: GuideIntro
   sceneFadeDelay: 0.2
 --- !u!4 &1004704559
 Transform:

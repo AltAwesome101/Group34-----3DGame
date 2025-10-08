@@ -18,7 +18,7 @@ public class ShootingScript : MonoBehaviour
     public Transform firePoint;
 
     [Tooltip("How many bullets to keep in the pool.")]
-    public int poolSize = 50;
+    public int poolSize = 400;
 
     [Tooltip("Minimum time (seconds) between shots.")]
     public float fireInterval = 0.3f;
@@ -109,6 +109,7 @@ public class ShootingScript : MonoBehaviour
         GameObject bullet = pool[poolIndex];
         poolIndex = (poolIndex + 1) % pool.Count;
         bullet.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(dir));
+        bullet.SetActive(false);
         bullet.SetActive(true);
 
     }

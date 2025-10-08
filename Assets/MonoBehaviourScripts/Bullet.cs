@@ -22,6 +22,17 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
+    private void Update()
+    {
+       
+        transform.position += transform.forward * speed * Time.deltaTime;
+        lifeTime -= Time.deltaTime;
+        if (lifeTime <= 0f)
+        {
+            gameObject.SetActive(false); 
+        }
+    }
+
     void OnCollisionEnter(Collision other)
     {
        
