@@ -3,37 +3,26 @@ using TMPro;
 using System.Collections;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Collider))]
 public class NPC : MonoBehaviour
 {
+    [Header("UI References")]
     public GameObject interactPromptUI;
-
     public TextMeshProUGUI dialogueText;
 
+    [Header("Dialogue Settings")]
     public float interactionPauseTime = 3f;
+    public float fadeDuration = 1f; 
 
     private ShootingScript shootingScript;
-
     private int questStage = 0;
-
     private int meleeKills = 0;
-
     public int requiredMeleeKills = 10;
 
     private bool playerInRange = false;
-
     private PlayerInputActions inputActions;
-
     private RPGFPGameManager gameManager;
-
     private InventoryManager inventory;
-
-    public void RegisterMeleeKill()
-    {
-        if (questStage == 1)
-        {
-            meleeKills++;
-        }
-    }
 
     void Awake()
     {
@@ -55,6 +44,12 @@ public class NPC : MonoBehaviour
         inputActions.Player.Interact.Disable();
     }
 
+    public void RegisterMeleeKill()
+    {
+        if (questStage == 1)
+            meleeKills++;
+    }
+
     private void OnInteractPerformed(InputAction.CallbackContext ctx)
     {
         if (!playerInRange || shootingScript == null) return;
@@ -64,29 +59,64 @@ public class NPC : MonoBehaviour
     private IEnumerator HandleInteraction()
     {
         Time.timeScale = 0f;
+
         string msg = GetDynamicMessage();
-        if (dialogueText != null) 
-        { 
-            dialogueText.text = msg; 
-        }
-        if (interactPromptUI != null) 
-        { 
-            interactPromptUI.SetActive(false); 
-        }
+        float displayTime = GetDisplayTimeForMessage(msg);
 
-        yield return new WaitForSecondsRealtime(interactionPauseTime);
-        dialogueText.text = "";
+        if (interactPromptUI != null)
+            interactPromptUI.SetActive(false);
 
+        yield return StartCoroutine(FadeText(msg, 0f, 1f));
+        yield return new WaitForSecondsRealtime(displayTime);
+        yield return StartCoroutine(FadeText("", 1f, 0f));
         yield return StartCoroutine(Countdown());
         Time.timeScale = 1f;
     }
+
+    private IEnumerator FadeText(string newText, float fromAlpha, float toAlpha)
+    {
+        if (dialogueText == null) yield break;
+
+        if (!string.IsNullOrEmpty(newText))
+            dialogueText.text = newText;
+
+        Color c = dialogueText.color;
+        c.a = fromAlpha;
+        dialogueText.color = c;
+
+        float timer = 0f;
+        while (timer < fadeDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+            float alpha = Mathf.Lerp(fromAlpha, toAlpha, timer / fadeDuration);
+            dialogueText.color = new Color(c.r, c.g, c.b, alpha);
+            yield return null;
+        }
+
+      
+        dialogueText.color = new Color(c.r, c.g, c.b, toAlpha);
+
+       
+        if (toAlpha == 0f)
+            dialogueText.text = "";
+    }
+
+    private float GetDisplayTimeForMessage(string message)
+    {
+        if (message.Contains("SHE has been awakened")) return 7f;  
+        if (message.Contains("melee master")) return 5f;           
+        return interactionPauseTime;                               
+    }
+
     private IEnumerator Countdown()
     {
         for (int i = 3; i > 0; i--)
         {
             dialogueText.text = i.ToString();
+            dialogueText.color = new Color(dialogueText.color.r, dialogueText.color.g, dialogueText.color.b, 1f);
             yield return new WaitForSecondsRealtime(1f);
         }
+
         dialogueText.text = "Start!";
         yield return new WaitForSecondsRealtime(0.5f);
         dialogueText.text = "";
@@ -111,7 +141,9 @@ public class NPC : MonoBehaviour
         }
         else if (questStage == 0)
         {
-            return $"SHE has been awakened and SHE will not spare those who get in her way. You must save the chosen one who has awakened her before she uses their body as a host. Collect {totalKeys} keys.\n(You Currently Have: {keys}) to unlock the doors.";
+            return $"SHE has been awakened and SHE will not spare those who get in her way. " +
+                   $"You must save the chosen one who has awakened her before she uses their body as a host. " +
+                   $"Collect {totalKeys} keys.\n(You Currently Have: {keys}) and return back to me might have somethimg to help you on your Journey.";
         }
         else if (questStage == 1)
         {
@@ -128,16 +160,20 @@ public class NPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            if (interactPromptUI != null) interactPromptUI.SetActive(true);
+            if (interactPromptUI != null)
+                interactPromptUI.SetActive(true);
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            if (interactPromptUI != null) interactPromptUI.SetActive(false);
-            if (dialogueText != null) dialogueText.text = "";
+            if (interactPromptUI != null)
+                interactPromptUI.SetActive(false);
+            if (dialogueText != null)
+                dialogueText.text = "";
         }
     }
 }
