@@ -60,6 +60,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enermy001 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7341400808790344332, guid: 074472c37dee3184ab052690324c25a9, type: 3}
+      propertyPath: hitSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 32373713d721c3040a18a5cbe9a7e78f, type: 3}
+    - target: {fileID: 7341400808790344332, guid: 074472c37dee3184ab052690324c25a9, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d461ed31706d28a4086af04d46a468ef, type: 3}
     - target: {fileID: 8685532021632848146, guid: 074472c37dee3184ab052690324c25a9, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -74,15 +82,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8685532021632848146, guid: 074472c37dee3184ab052690324c25a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -11.562717
+      value: -6.9244156
       objectReference: {fileID: 0}
     - target: {fileID: 8685532021632848146, guid: 074472c37dee3184ab052690324c25a9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.4853134
+      value: 1.4740134
       objectReference: {fileID: 0}
     - target: {fileID: 8685532021632848146, guid: 074472c37dee3184ab052690324c25a9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.59
+      value: 10.57
       objectReference: {fileID: 0}
     - target: {fileID: 8685532021632848146, guid: 074472c37dee3184ab052690324c25a9, type: 3}
       propertyPath: m_LocalRotation.w

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 [RequireComponent(typeof(AudioSource))]
@@ -74,7 +74,7 @@ public class ElectricalPanelInteraction : MonoBehaviour
             isInRange = true;
             if (!hasInteracted && interactionText != null)
             {
-                interactionText.text = "Press E to interact";
+                interactionText.text = "I Should Follow the Cable Perhaps";
                 interactionText.gameObject.SetActive(true);
             }
         }
