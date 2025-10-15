@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider))]
-public class UnlockableDoor : MonoBehaviour
+public class GeneratorUnlockable : MonoBehaviour
 {
     [Header("UI")]
     public TextMeshProUGUI promptText;
@@ -81,7 +81,7 @@ public class UnlockableDoor : MonoBehaviour
         {
             isOpen = true;
             if (promptText != null) promptText.text = "";
-            
+
         }
     }
 }
