@@ -74,7 +74,7 @@ public class ElectricalPanelInteraction : MonoBehaviour
             isInRange = true;
             if (!hasInteracted && interactionText != null)
             {
-                interactionText.text = "I Should Follow the Cable Perhaps";
+                interactionText.text = "I remember mom saying that this cable leads to the generator";
                 interactionText.gameObject.SetActive(true);
             }
         }

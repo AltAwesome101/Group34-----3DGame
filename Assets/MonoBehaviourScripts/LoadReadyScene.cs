@@ -5,6 +5,6 @@ public class LoadReadyScene : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneManager.LoadSceneAsync("Level2");
+        SceneManager.LoadSceneAsync("MainMenu");
     }
 }

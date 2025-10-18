@@ -48,7 +48,7 @@ public class CantOpenWithKey2 : MonoBehaviour
             isInRange = true;
             if (!hasInteracted && interactionText != null)
             {
-                interactionText.text = "Door Runs with an Alternative Power Source";
+                interactionText.text = "I need to turn on the power so this door can open";
                 interactionText.gameObject.SetActive(true);
             }
         }

@@ -141,9 +141,9 @@ public class NPC : MonoBehaviour
         }
         else if (questStage == 0)
         {
-            return $"SHE has been awakened and SHE will not spare those who get in her way. " +
-                   $"You must save the chosen one who has awakened her before she uses their body as a host. " +
-                   $"Collect {totalKeys} keys.\n(You Currently Have: {keys}) and return back to me might have somethimg to help you on your Journey.";
+            return $"A Spirit has been awakened and she is looking for ways to build her stregth. " +
+                   $"Find your brother and defeat her before it is too late. Be careful, her spiritual energy has already invaded the house. " +
+                   $"Collect {totalKeys} keys.\n(You Currently Have: {keys}) and return back to me. I might have something to help you on your Journey.";
         }
         else if (questStage == 1)
         {
