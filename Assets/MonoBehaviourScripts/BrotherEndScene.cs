@@ -38,7 +38,7 @@ public class BrotherEndSequence : MonoBehaviour
         if (promptText) promptText.gameObject.SetActive(false);
         if (endText)
         {
-            endText.text = "Congratulations you reached the end of Submission 2";
+            endText.text = "Congratulations you reached the end of Submission 3";
             endText.gameObject.SetActive(true);
         }
     }
