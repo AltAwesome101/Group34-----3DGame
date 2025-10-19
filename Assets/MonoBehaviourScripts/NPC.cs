@@ -103,7 +103,7 @@ public class NPC : MonoBehaviour
 
     private float GetDisplayTimeForMessage(string message)
     {
-        if (message.Contains("SHE has been awakened")) return 7f;  
+        if (message.Contains("A Spirit has been awakened")) return 10f;  
         if (message.Contains("melee master")) return 5f;           
         return interactionPauseTime;                               
     }
