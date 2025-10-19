@@ -13,7 +13,7 @@ public class PickupSpawner : MonoBehaviour
 
     [Header("Spawn Scale")]
     [Tooltip("Controls how large or small the spawned pickups appear.")]
-    public float spawnScale = 1f; // Default 1 = normal size
+    public float spawnScale = 1f; 
 
     public void SpawnPickup()
     {
@@ -25,11 +25,7 @@ public class PickupSpawner : MonoBehaviour
             if (validPickups.Length > 0)
             {
                 GameObject selectedPickup = validPickups[Random.Range(0, validPickups.Length)];
-
-                // Spawn the pickup
                 GameObject instance = Instantiate(selectedPickup, transform.position + spawnOffset, Quaternion.identity);
-
-                // ✅ Apply custom scale
                 instance.transform.localScale = Vector3.one * spawnScale;
             }
         }
