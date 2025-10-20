@@ -2,52 +2,27 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    [Tooltip("When the player picks up a part, instantiate its preview here (optional).")]
-    public Transform holdDisplayPoint;
+    public bool isHoldingPart { get; private set; } = false;
+    public int currentPartID { get; private set; } = -1;
 
-    [Tooltip("Prefab list indexed by partID for visual preview (optional).")]
-    public GameObject[] partPrefabs;
+    
+    public bool HasPart() => isHoldingPart;
+    public int GetHeldPartID() => currentPartID;
+    public void RemoveHeldPart()
+    {
+        if (!isHoldingPart) return;
+        currentPartID = -1;
+        isHoldingPart = false;
+    }
 
-    private int heldPartID = -1;
-
-    private GameObject heldPreviewInstance;
-
-    public bool HasPart() => heldPartID != -1;
-    public int GetHeldPartID() => heldPartID;
-
+    
     public bool AddPart(int partID)
     {
-        if (heldPartID != -1) 
-        { 
-            return false; 
-        }
-        heldPartID = partID;
+        if (isHoldingPart)
+            return false;
 
-        if (holdDisplayPoint != null && partPrefabs != null && partID >= 0 && partID < partPrefabs.Length)
-        {
-            var prefab = partPrefabs[partID];
-            if (prefab != null)
-            {
-                heldPreviewInstance = Instantiate(prefab, holdDisplayPoint.position, holdDisplayPoint.rotation, holdDisplayPoint);
-     
-                foreach (var c in heldPreviewInstance.GetComponentsInChildren<Collider>()) c.enabled = false;
-            }
-        }
-
+        currentPartID = partID;
+        isHoldingPart = true;
         return true;
-    }
-
-    public int RemoveHeldPart()
-    {
-        int tmp = heldPartID;
-        heldPartID = -1;
-        if (heldPreviewInstance != null) Destroy(heldPreviewInstance);
-        heldPreviewInstance = null;
-        return tmp;
-    }
-
-    public void Clear()
-    {
-        RemoveHeldPart();
     }
 }

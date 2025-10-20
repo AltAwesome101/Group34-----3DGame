@@ -26,6 +26,7 @@ public class GeneratorInteract : MonoBehaviour
     [SerializeField] private GeneratorHoldUI holdUI;
     [SerializeField] private float holdTime = 2f;
 
+    private GeneratorPartsUI partsUI; 
     private List<int> remainingParts;
     private int placedCount;
     private bool playerNearby;
@@ -42,6 +43,10 @@ public class GeneratorInteract : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         remainingParts = new List<int>(requiredPartIDs);
         HidePrompt();
+
+        
+        if (partsUI == null)
+            partsUI = FindFirstObjectByType<GeneratorPartsUI>();
     }
 
     private void OnEnable()
@@ -146,6 +151,10 @@ public class GeneratorInteract : MonoBehaviour
         nearbyInventory.RemoveHeldPart();
         if (audioSource && placeSound) audioSource.PlayOneShot(placeSound);
 
+        
+        if (partsUI != null)
+            partsUI.HidePart(partID);
+
         UpdateProgressUI();
         UpdatePrompt();
 
@@ -193,7 +202,7 @@ public class GeneratorInteract : MonoBehaviour
     private IEnumerator HideAfter(float sec)
     {
         yield return new WaitForSeconds(sec);
-        UpdatePrompt(); 
+        UpdatePrompt();
     }
 
     private void UpdateProgressUI()

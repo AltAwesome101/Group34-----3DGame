@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 
 [RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(AudioSource))]
 public class PartItem : MonoBehaviour
 {
     public int partID;
@@ -12,12 +13,10 @@ public class PartItem : MonoBehaviour
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private GameObject pickupVFXPrefab;
 
+    private GeneratorPartsUI partsUI; 
     private PlayerInputActions controls;
-
     private PlayerInventory nearbyInventory;
-
     private AudioSource audioSource;
-
     private bool playerNearby;
 
     private void Awake()
@@ -25,6 +24,10 @@ public class PartItem : MonoBehaviour
         controls = new PlayerInputActions();
         audioSource = GetComponent<AudioSource>();
         HidePrompt();
+
+        
+        if (partsUI == null)
+            partsUI = FindFirstObjectByType<GeneratorPartsUI>();
     }
 
     private void OnEnable()
@@ -44,7 +47,8 @@ public class PartItem : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         nearbyInventory = other.GetComponent<PlayerInventory>();
-        if (nearbyInventory == null) return;
+        if (nearbyInventory == null)
+            nearbyInventory = FindFirstObjectByType<PlayerInventory>();
 
         playerNearby = true;
         ShowPrompt("Press E to pick up part");
@@ -61,16 +65,23 @@ public class PartItem : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext ctx)
     {
-        if (!playerNearby || nearbyInventory == null) return;
+        if (!playerNearby || nearbyInventory == null)
+            return;
 
         if (!nearbyInventory.AddPart(partID))
         {
-            ShowPrompt("You’re already holding a part, Install it on the Generator then come back");
+            ShowPrompt("You're already holding a part! Install it on the Generator first.");
             return;
         }
 
-        if (audioSource && pickupSound) audioSource.PlayOneShot(pickupSound);
-        if (pickupVFXPrefab) Instantiate(pickupVFXPrefab, transform.position, Quaternion.identity);
+        if (partsUI != null)
+            partsUI.ShowPart(partID); 
+
+        if (audioSource && pickupSound)
+            audioSource.PlayOneShot(pickupSound);
+
+        if (pickupVFXPrefab)
+            Instantiate(pickupVFXPrefab, transform.position, Quaternion.identity);
 
         HidePrompt();
         gameObject.SetActive(false);
@@ -78,14 +89,14 @@ public class PartItem : MonoBehaviour
 
     private void ShowPrompt(string message)
     {
-        if (promptText == null) return;
+        if (!promptText) return;
         promptText.text = message;
         promptText.enabled = true;
     }
 
     private void HidePrompt()
     {
-        if (promptText == null) return;
+        if (!promptText) return;
         promptText.enabled = false;
     }
 }
