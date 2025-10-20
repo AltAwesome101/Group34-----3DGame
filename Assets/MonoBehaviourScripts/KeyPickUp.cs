@@ -7,18 +7,30 @@ public class KeyPickup : MonoBehaviour
     [Tooltip("Sound to play when the key is picked up")]
     public AudioClip pickupSound;
 
+    [Header("Rotation Settings")]
+    [Tooltip("How fast the key spins in degrees per second")]
+    public float rotationSpeed = 90f;  
+
     private AudioSource audioSource;
-    private bool isPickedUp = false;   // prevents multiple pickups if player stays in trigger
+    private bool isPickedUp = false;
 
     private void Awake()
     {
-        // Re-use an AudioSource on the object or add one if missing
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 1f; // make it 3D so sound comes from world position
+        audioSource.spatialBlend = 1f;
+    }
+
+    private void Update()
+    {
+        
+        if (!isPickedUp)
+        {
+            transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,7 +49,7 @@ public class KeyPickup : MonoBehaviour
             inventory.AddKey();
             PlayPickupSound();
             isPickedUp = true;
-            Destroy(gameObject, pickupSound != null ? pickupSound.length : 0f); // wait for sound
+            Destroy(gameObject, pickupSound != null ? pickupSound.length : 0f);
         }
     }
 

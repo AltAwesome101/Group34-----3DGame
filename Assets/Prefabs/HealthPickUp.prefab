@@ -123,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healAmount: 10
+  rotationSpeed: 90
+  pickupSound: {fileID: 0}
 --- !u!1001 &3309708536607415326
 PrefabInstance:
   m_ObjectHideFlags: 0
