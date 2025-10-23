@@ -26,15 +26,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.02
+      value: -14.370197
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.000005364418
+      value: -4.109797
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.98
+      value: 6.2744036
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -42,15 +42,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -299,7 +299,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 1
+  m_Speed: 2
   m_Acceleration: 1
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -323,7 +323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9906b111ee121d4993d414e7822767e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goal: {fileID: 0}
+  detectionRadius: 7.5
+  stopChasingRadius: 11.5
+  pathUpdateRate: 0.25
   kick: 2
   knockbackTime: 1
 --- !u!114 &3654879607513008140
@@ -339,7 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitSound: {fileID: 8300000, guid: 32373713d721c3040a18a5cbe9a7e78f, type: 3}
-  deathSound: {fileID: 8300000, guid: d461ed31706d28a4086af04d46a468ef, type: 3}
+  deathSound: {fileID: 8300000, guid: c05c2d3ef7ec0dd4fa24235f4b4122a4, type: 3}
 --- !u!114 &3647017366664789254
 MonoBehaviour:
   m_ObjectHideFlags: 0

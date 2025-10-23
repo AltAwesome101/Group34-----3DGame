@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 37.789658
+      value: -38.32
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.1097984
+      value: -4.109802
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.5589952
+      value: -9.59
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitSound: {fileID: 8300000, guid: 32373713d721c3040a18a5cbe9a7e78f, type: 3}
-  deathSound: {fileID: 8300000, guid: d461ed31706d28a4086af04d46a468ef, type: 3}
+  deathSound: {fileID: 8300000, guid: 17c42fd29e1a3564eac09e0ae008b971, type: 3}
 --- !u!114 &1640433655698232867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,5 +232,5 @@ MonoBehaviour:
   dodgeForce: 3
   jumpInterval: 3
   dodgeChance: 0.4
-  detectionRadius: 15
+  detectionRadius: 10
   jumpSound: {fileID: 0}

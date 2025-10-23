@@ -12,24 +12,36 @@ public class NPC : MonoBehaviour
 
     [Header("Dialogue Settings")]
     public float interactionPauseTime = 3f;
-    public float fadeDuration = 1f; 
+    public float fadeDuration = 1f;
 
     private ShootingScript shootingScript;
+
     private int questStage = 0;
+
     private int meleeKills = 0;
+
     public int requiredMeleeKills = 10;
 
     private bool playerInRange = false;
+
     private PlayerInputActions inputActions;
+
     private RPGFPGameManager gameManager;
+
     private InventoryManager inventory;
+
+    private bool interactionActive = false;
+
+    private float interactionCooldown = 5f;
+
+    private float cooldownTimer = 0f;
 
     void Awake()
     {
         inputActions = new PlayerInputActions();
-        shootingScript = FindObjectOfType<ShootingScript>();
-        inventory = FindObjectOfType<InventoryManager>();
-        gameManager = FindObjectOfType<RPGFPGameManager>();
+        shootingScript = Object.FindFirstObjectByType<ShootingScript>();
+        inventory = Object.FindFirstObjectByType<InventoryManager>();
+        gameManager = Object.FindFirstObjectByType<RPGFPGameManager>();
     }
 
     void OnEnable()
@@ -44,6 +56,14 @@ public class NPC : MonoBehaviour
         inputActions.Player.Interact.Disable();
     }
 
+    private void Update()
+    {
+        if (!interactionActive && cooldownTimer > 0f)
+        {
+            cooldownTimer -= Time.deltaTime;
+        }
+    }
+
     public void RegisterMeleeKill()
     {
         if (questStage == 1)
@@ -53,11 +73,15 @@ public class NPC : MonoBehaviour
     private void OnInteractPerformed(InputAction.CallbackContext ctx)
     {
         if (!playerInRange || shootingScript == null) return;
+
+        if (interactionActive || cooldownTimer > 0f) return;
+
         StartCoroutine(HandleInteraction());
     }
 
     private IEnumerator HandleInteraction()
     {
+        interactionActive = true;
         Time.timeScale = 0f;
 
         string msg = GetDynamicMessage();
@@ -70,7 +94,11 @@ public class NPC : MonoBehaviour
         yield return new WaitForSecondsRealtime(displayTime);
         yield return StartCoroutine(FadeText("", 1f, 0f));
         yield return StartCoroutine(Countdown());
+
         Time.timeScale = 1f;
+
+        interactionActive = false;
+        cooldownTimer = interactionCooldown;
     }
 
     private IEnumerator FadeText(string newText, float fromAlpha, float toAlpha)
@@ -93,19 +121,17 @@ public class NPC : MonoBehaviour
             yield return null;
         }
 
-      
         dialogueText.color = new Color(c.r, c.g, c.b, toAlpha);
 
-       
         if (toAlpha == 0f)
             dialogueText.text = "";
     }
 
     private float GetDisplayTimeForMessage(string message)
     {
-        if (message.Contains("A Spirit has been awakened")) return 10f;  
-        if (message.Contains("melee master")) return 5f;           
-        return interactionPauseTime;                               
+        if (message.Contains("A Spirit has been awakened")) return 10f;
+        if (message.Contains("melee master")) return 5f;
+        return interactionPauseTime;
     }
 
     private IEnumerator Countdown()
@@ -137,7 +163,7 @@ public class NPC : MonoBehaviour
         {
             questStage = 2;
             shootingScript.currentGun = ShootingScript.GunType.Shotgun;
-            return "You’re a melee master! Enjoy your ShotGun.";
+            return "You’re a melee master! Enjoy your Shotgun.";
         }
         else if (questStage == 0)
         {

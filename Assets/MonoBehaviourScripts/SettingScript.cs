@@ -8,7 +8,11 @@ public class SettingsMenu : MonoBehaviour
     public Slider headBobSlider;
 
     [Header("Target")]
-    public LookScript lookScript; 
+    public LookScript lookScript;
+
+    [Header("Navigation")]
+    public Button backButton;
+    public GameObject previousPanel;
 
     private void Start()
     {
@@ -21,7 +25,6 @@ public class SettingsMenu : MonoBehaviour
         lookScript.SetLookSensitivity(savedSensitivity);
         lookScript.SetHeadBobAmount(savedBob);
 
-    
         sensitivitySlider.onValueChanged.AddListener(v =>
         {
             lookScript.SetLookSensitivity(v);
@@ -33,5 +36,23 @@ public class SettingsMenu : MonoBehaviour
             lookScript.SetHeadBobAmount(v);
             PlayerPrefs.SetFloat("BobAmplitude", v);
         });
+
+       
+        if (backButton != null)
+            backButton.onClick.AddListener(HandleBackButton);
+    }
+
+    private void HandleBackButton()
+    {
+       
+        if (previousPanel != null)
+            previousPanel.SetActive(true);
+
+     
+        gameObject.SetActive(false);
+
+     
+        PlayerPrefs.Save();
+
     }
 }
