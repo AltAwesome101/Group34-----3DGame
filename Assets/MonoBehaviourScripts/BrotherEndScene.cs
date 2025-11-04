@@ -5,8 +5,9 @@ using TMPro;
 public class BrotherEndSequence : MonoBehaviour
 {
     [Header("References")]
-    public TextMeshProUGUI promptText;     
-    public TextMeshProUGUI endText;        
+    public TextMeshProUGUI promptText;
+    public TextMeshProUGUI endText;
+    private Animator broAnimator;
 
     private bool playerNearby;
 
@@ -14,20 +15,24 @@ public class BrotherEndSequence : MonoBehaviour
 
     void Start()
     {
-        if (promptText) 
-        { 
-            promptText.gameObject.SetActive(false); 
-        }
-        if (endText) 
+        if (promptText)
         {
-            endText.gameObject.SetActive(false); 
+            promptText.gameObject.SetActive(false);
         }
+        if (endText)
+        {
+            endText.gameObject.SetActive(false);
+        }
+
+        broAnimator = GetComponent<Animator>();
+
     }
 
     void Update()
     {
         if (playerNearby && !messageShown && Keyboard.current.eKey.wasPressedThisFrame)
         {
+            triggerAnimation();
             ShowEndMessage();
         }
     }
@@ -40,6 +45,14 @@ public class BrotherEndSequence : MonoBehaviour
         {
             endText.text = "Congratulations you reached the end of Submission 3";
             endText.gameObject.SetActive(true);
+        }
+    }
+
+    void triggerAnimation()
+    {
+        if(broAnimator != null)
+        {
+            broAnimator.SetTrigger("ScenePlay");
         }
     }
 
