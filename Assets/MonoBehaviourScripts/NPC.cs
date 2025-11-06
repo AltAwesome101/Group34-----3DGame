@@ -168,7 +168,7 @@ public class NPC : MonoBehaviour
         else if (questStage == 0)
         {
             return $"A Spirit has been awakened and she is looking for ways to build her stregth. " +
-                   $"Find your brother and defeat her before it is too late. Be careful, her spiritual energy has already invaded the house. " +
+                   $"Find your brother and his friend to defeat her before it is too late. Be careful, her spiritual energy has already invaded the house. " +
                    $"Collect {totalKeys} keys.\n(You Currently Have: {keys}) and return back to me. I might have something to help you on your Journey.";
         }
         else if (questStage == 1)
