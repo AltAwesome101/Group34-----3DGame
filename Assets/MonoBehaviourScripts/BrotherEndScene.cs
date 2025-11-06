@@ -7,7 +7,7 @@ public class BrotherEndSequence : MonoBehaviour
     [Header("References")]
     public TextMeshProUGUI promptText;
     public TextMeshProUGUI endText;
-    private Animator broAnimator;
+    public Animator broAnimator;
 
     private bool playerNearby;
 
@@ -32,7 +32,7 @@ public class BrotherEndSequence : MonoBehaviour
     {
         if (playerNearby && !messageShown && Keyboard.current.eKey.wasPressedThisFrame)
         {
-            triggerAnimation();
+            
             ShowEndMessage();
         }
     }
@@ -43,6 +43,7 @@ public class BrotherEndSequence : MonoBehaviour
         if (promptText) promptText.gameObject.SetActive(false);
         if (endText)
         {
+            triggerAnimation();
             endText.text = "Congratulations you reached the end of Submission 3";
             endText.gameObject.SetActive(true);
         }
@@ -50,10 +51,9 @@ public class BrotherEndSequence : MonoBehaviour
 
     void triggerAnimation()
     {
-        if(broAnimator != null)
-        {
+        
             broAnimator.SetTrigger("ScenePlay");
-        }
+        
     }
 
     void OnTriggerEnter(Collider other)
