@@ -7,8 +7,9 @@ public class Destroyable : MonoBehaviour
     private int currentHits = 0;
 
     [Header("Effects")]
-    public ParticleSystem destructionEffect; 
-    public AudioClip breakSound;             
+    public ParticleSystem destructionEffect;
+    public AudioClip breakSound;
+
     private AudioSource audioSource;
 
     private void Start()
@@ -16,6 +17,9 @@ public class Destroyable : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; // make sound 2D so it's always heard
     }
 
     public void RegisterHit()
@@ -37,9 +41,15 @@ public class Destroyable : MonoBehaviour
             Destroy(effect.gameObject, effect.main.duration + effect.main.startLifetime.constantMax);
         }
 
-       
         if (breakSound != null)
-            audioSource.PlayOneShot(breakSound);
+        {
+            // Detach a temporary AudioSource to finish playing before destruction
+            AudioSource tempAudio = new GameObject("TempAudio").AddComponent<AudioSource>();
+            tempAudio.transform.position = transform.position;
+            tempAudio.clip = breakSound;
+            tempAudio.Play();
+            Destroy(tempAudio.gameObject, breakSound.length);
+        }
 
         Destroy(gameObject);
     }

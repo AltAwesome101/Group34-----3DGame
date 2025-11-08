@@ -1,10 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
 [RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(AudioSource))]
 public class GeneratorInteract : MonoBehaviour
 {
     [Header("Parts")]
@@ -21,12 +22,13 @@ public class GeneratorInteract : MonoBehaviour
     [SerializeField] private TextMeshProUGUI progressText;
     [SerializeField] private AudioClip placeSound;
     [SerializeField] private AudioClip completeSound;
+    [SerializeField] private AudioClip holdLoopSound;   // New looping audio for holding
 
     [Header("Hold Interaction")]
     [SerializeField] private GeneratorHoldUI holdUI;
     [SerializeField] private float holdTime = 2f;
 
-    private GeneratorPartsUI partsUI; 
+    private GeneratorPartsUI partsUI;
     private List<int> remainingParts;
     private int placedCount;
     private bool playerNearby;
@@ -41,10 +43,13 @@ public class GeneratorInteract : MonoBehaviour
     {
         controls = new PlayerInputActions();
         audioSource = GetComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; // 🔹 Make all audio 2D
+        audioSource.loop = false;
+
         remainingParts = new List<int>(requiredPartIDs);
         HidePrompt();
 
-        
         if (partsUI == null)
             partsUI = FindFirstObjectByType<GeneratorPartsUI>();
     }
@@ -66,6 +71,7 @@ public class GeneratorInteract : MonoBehaviour
     private void Start()
     {
         UpdateProgressUI();
+
         if (lightsToEnable != null)
             foreach (var l in lightsToEnable) if (l) l.enabled = false;
 
@@ -79,6 +85,7 @@ public class GeneratorInteract : MonoBehaviour
         if (isHolding)
         {
             holdProgress += Time.deltaTime;
+
             if (holdUI)
             {
                 holdUI.Show(true);
@@ -99,15 +106,33 @@ public class GeneratorInteract : MonoBehaviour
         {
             isHolding = true;
             holdProgress = 0;
+
+            // 🔹 Start looping hold sound if available
+            if (holdLoopSound != null)
+            {
+                audioSource.clip = holdLoopSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
         }
     }
 
     private void StopHold(InputAction.CallbackContext ctx) => StopHold();
+
     private void StopHold()
     {
         isHolding = false;
         holdProgress = 0;
+
         if (holdUI) holdUI.Show(false);
+
+        // 🔹 Stop hold loop audio
+        if (audioSource.isPlaying && audioSource.loop)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+            audioSource.clip = null;
+        }
     }
 
     private void TryInsert()
@@ -149,9 +174,11 @@ public class GeneratorInteract : MonoBehaviour
         }
 
         nearbyInventory.RemoveHeldPart();
-        if (audioSource && placeSound) audioSource.PlayOneShot(placeSound);
 
-        
+        // 🔹 Play place sound (2D)
+        if (audioSource && placeSound)
+            audioSource.PlayOneShot(placeSound);
+
         if (partsUI != null)
             partsUI.HidePart(partID);
 
@@ -237,7 +264,18 @@ public class GeneratorInteract : MonoBehaviour
 
     private void OnGeneratorComplete()
     {
-        if (audioSource && completeSound) audioSource.PlayOneShot(completeSound);
+        // 🔹 Stop hold audio if still looping
+        if (audioSource.isPlaying && audioSource.loop)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+            audioSource.clip = null;
+        }
+
+        // 🔹 Play complete sound (2D)
+        if (audioSource && completeSound)
+            audioSource.PlayOneShot(completeSound);
+
         if (lightsToEnable != null)
             foreach (var l in lightsToEnable) if (l) l.enabled = true;
 

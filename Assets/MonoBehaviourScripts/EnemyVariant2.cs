@@ -2,123 +2,155 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-[RequireComponent(typeof(NavMeshAgent))]
-
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NavMeshAgent), typeof(AudioSource))]
 public class EnermyVariant2 : MonoBehaviour
 {
     [Header("Target")]
     public Transform player;
 
-    [Header("Movement Settings")]
-    public float jumpForce = 6f;
-    public float dodgeForce = 4f;
-    public float jumpInterval = 3f;       // Time between jumps
-    public float dodgeChance = 0.4f;      // 30% chance to dodge
+    [Header("Detection Settings")]
     public float detectionRadius = 15f;
+    public float stopChasingRadius = 20f;
+
+    [Header("Patrol Settings")]
+    public float patrolRadius = 10f;
+    public float patrolWaitTime = 3f;
+
+    [Header("Movement Settings")]
+    public float swayDistance = 2f;
+    public float swaySpeed = 2f;
+    public float dodgeChance = 0.3f;
+    public float pathUpdateRate = 0.25f;
+    public float hoverAmplitude = 0.5f;
+    public float hoverFrequency = 2f;
 
     [Header("Audio")]
-    public AudioClip jumpSound;
-    private AudioSource audioSource;
+    public AudioClip aggroSound;
 
     private NavMeshAgent agent;
+    private AudioSource audioSource;
 
-    private Rigidbody rb;
+    private bool isChasing = false;
+    private bool isPatrolling = false;
+    private bool hasPlayedAggroSound = false;
 
-    private bool isGrounded = true;
+    private float patrolTimer;
+    private float hoverOffset;
+    private Vector3 startPosition;
+    private Vector3 patrolTarget;
 
-    private bool canJump = true;
-
-    void Start()
+    private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
-
-        agent.updatePosition = true;
-        agent.updateRotation = true;
-
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
 
-        StartCoroutine(JumpRoutine());
+        startPosition = transform.position;
+        hoverOffset = Random.Range(0f, Mathf.PI * 2);
+
+        PickNewPatrolPoint();
+        InvokeRepeating(nameof(CheckDistance), 0f, pathUpdateRate);
     }
 
-    void Update()
+    private void Update()
     {
-        if (!player) return;
+        HoverEffect();
+
+        if (isChasing)
+        {
+            agent.SetDestination(player.position);
+
+            if (Random.value < dodgeChance * Time.deltaTime)
+                StartCoroutine(SwayDodge());
+        }
+        else
+        {
+            HandlePatrol();
+        }
+    }
+
+    private void HoverEffect()
+    {
+        Vector3 pos = transform.position;
+        pos.y = startPosition.y + Mathf.Sin(Time.time * hoverFrequency + hoverOffset) * hoverAmplitude;
+        transform.position = pos;
+    }
+
+    private void HandlePatrol()
+    {
+        if (!isPatrolling || agent.remainingDistance < 0.5f)
+        {
+            patrolTimer += Time.deltaTime;
+            if (patrolTimer >= patrolWaitTime)
+            {
+                PickNewPatrolPoint();
+                patrolTimer = 0f;
+            }
+        }
+    }
+
+    private void PickNewPatrolPoint()
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
+        randomDirection += transform.position;
+
+        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, NavMesh.AllAreas))
+        {
+            patrolTarget = hit.position;
+            agent.SetDestination(patrolTarget);
+            isPatrolling = true;
+        }
+    }
+
+    private IEnumerator SwayDodge()
+    {
+        Vector3 sideDir = transform.right * (Random.value > 0.5f ? 1 : -1);
+        Vector3 targetPos = transform.position + sideDir * swayDistance;
+
+        float t = 0f;
+        Vector3 startPos = transform.position;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * swaySpeed;
+            transform.position = Vector3.Lerp(startPos, targetPos, Mathf.SmoothStep(0, 1, t));
+            yield return null;
+        }
+    }
+
+    private void CheckDistance()
+    {
+        if (player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= detectionRadius)
+
+        if (!isChasing && distance <= detectionRadius)
         {
-            if (isGrounded && !agent.isStopped)
-                agent.SetDestination(player.position);
+            isChasing = true;
+            isPatrolling = false;
+
+            if (!hasPlayedAggroSound && aggroSound != null)
+            {
+                audioSource.PlayOneShot(aggroSound);
+                hasPlayedAggroSound = true;
+            }
+        }
+        else if (isChasing && distance >= stopChasingRadius)
+        {
+            isChasing = false;
+            PickNewPatrolPoint();
         }
     }
 
-    IEnumerator JumpRoutine()
+    private void OnDrawGizmosSelected()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(jumpInterval);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-            if (!isGrounded || player == null) continue;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, stopChasingRadius);
 
-            float random = Random.value;
-
-            if (random < dodgeChance)
-                StartCoroutine(Dodge());
-            else
-                StartCoroutine(JumpTowardPlayer());
-        }
-    }
-
-    IEnumerator JumpTowardPlayer()
-    {
-        if (!isGrounded) yield break;
-
-        Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0.4f;
-
-        PerformJump(direction, jumpForce);
-        yield return new WaitForSeconds(1f);
-    }
-
-    IEnumerator Dodge()
-    {
-        if (!isGrounded) yield break;
-
-        Vector3 sideDir = transform.right * (Random.value > 0.5f ? 1 : -1);
-        sideDir.y = 0.3f;
-
-        PerformJump(sideDir, dodgeForce);
-        yield return new WaitForSeconds(0.7f);
-    }
-
-    private void PerformJump(Vector3 direction, float force)
-    {
-        if (audioSource && jumpSound)
-            audioSource.PlayOneShot(jumpSound);
-
-        agent.isStopped = true;
-        rb.isKinematic = false;
-        rb.AddForce(direction * force, ForceMode.Impulse);
-        isGrounded = false;
-
-        Invoke(nameof(EnableNavMesh), 1f); 
-    }
-
-    private void EnableNavMesh()
-    {
-        rb.isKinematic = true;
-        agent.isStopped = false;
-        isGrounded = true;
-    }
-
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.CompareTag("Ground"))
-            isGrounded = true;
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, patrolRadius);
     }
 }

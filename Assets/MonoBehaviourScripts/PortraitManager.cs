@@ -21,8 +21,7 @@ public class PortraitPuzzleManager : MonoBehaviour
     private PortraitInteractable selected;
     private bool solved;
 
-    private readonly char[] correctOrder = {'D','A','W','N'};
-
+    private readonly char[] correctOrder = { 'D', 'A', 'W', 'N' };
     private PortraitInteractable[] allSlots;
 
     void Awake()
@@ -36,12 +35,20 @@ public class PortraitPuzzleManager : MonoBehaviour
 
     void Start()
     {
+    
         audioSource = GetComponent<AudioSource>();
-        if (promptText) 
-        { 
-            promptText.gameObject.SetActive(false); 
-        }
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
 
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; 
+        audioSource.volume = 1f;
+        audioSource.loop = false;
+
+        if (promptText)
+            promptText.gameObject.SetActive(false);
+
+      
         allSlots = Object.FindObjectsByType<PortraitInteractable>(FindObjectsSortMode.None);
         System.Array.Sort(allSlots, (x, y) => x.transform.position.x.CompareTo(y.transform.position.x));
     }
@@ -62,9 +69,7 @@ public class PortraitPuzzleManager : MonoBehaviour
             if (hit.collider.TryGetComponent(out PortraitInteractable target))
             {
                 promptText.gameObject.SetActive(true);
-                promptText.text = selected == null
-                    ? "Press E to Select"
-                    : "Press E to Swap";
+                promptText.text = selected == null ? "Press E to Select" : "Press E to Swap";
                 return;
             }
         }
@@ -90,7 +95,7 @@ public class PortraitPuzzleManager : MonoBehaviour
         }
         else
         {
-            if (p == selected) 
+            if (p == selected)
             {
                 p.Highlight(false);
                 selected = null;
@@ -124,8 +129,10 @@ public class PortraitPuzzleManager : MonoBehaviour
             b.transform.position = Vector3.Lerp(posB, posA, factor);
             yield return null;
         }
+
         a.transform.position = posB;
         b.transform.position = posA;
+
         CheckSolution();
     }
 
@@ -143,19 +150,26 @@ public class PortraitPuzzleManager : MonoBehaviour
     void Solve()
     {
         solved = true;
-        if (successSound && audioSource) audioSource.PlayOneShot(successSound);
-        if (doorToUnlock) doorToUnlock.SetActive(false);
+
+        if (successSound && audioSource)
+            audioSource.PlayOneShot(successSound);
+
+        if (doorToUnlock)
+            doorToUnlock.SetActive(false);
+
         if (promptText)
         {
             promptText.text = "Door unlocked!";
             MissionManager.Instance.CompleteMission("Investigate your room");
         }
+
         StartCoroutine(HidePrompt());
     }
 
     IEnumerator HidePrompt()
     {
         yield return new WaitForSeconds(2f);
-        if (promptText) promptText.gameObject.SetActive(false);
+        if (promptText)
+            promptText.gameObject.SetActive(false);
     }
 }

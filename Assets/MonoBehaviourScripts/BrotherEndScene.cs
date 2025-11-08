@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
+[RequireComponent(typeof(AudioSource))]
 public class BrotherEndSequence : MonoBehaviour
 {
     [Header("References")]
@@ -9,30 +10,29 @@ public class BrotherEndSequence : MonoBehaviour
     public TextMeshProUGUI endText;
     public Animator broAnimator;
 
-    private bool playerNearby;
+    [Header("Audio")]
+    public AudioClip endSound;  
+    private AudioSource audioSource;
 
+    private bool playerNearby;
     private bool messageShown;
 
     void Start()
     {
-        if (promptText)
-        {
-            promptText.gameObject.SetActive(false);
-        }
-        if (endText)
-        {
-            endText.gameObject.SetActive(false);
-        }
+
+        if (promptText) promptText.gameObject.SetActive(false);
+        if (endText) endText.gameObject.SetActive(false);
 
         broAnimator = GetComponent<Animator>();
 
+        audioSource = GetComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     void Update()
     {
         if (playerNearby && !messageShown && Keyboard.current.eKey.wasPressedThisFrame)
         {
-            
             ShowEndMessage();
         }
     }
@@ -40,20 +40,25 @@ public class BrotherEndSequence : MonoBehaviour
     void ShowEndMessage()
     {
         messageShown = true;
-        if (promptText) promptText.gameObject.SetActive(false);
+
+        if (promptText)
+            promptText.gameObject.SetActive(false);
+
         if (endText)
         {
             triggerAnimation();
-            endText.text = "Congratulations you reached the end of Submission 3";
+            endText.text = "Congratulations! You reached the end of Dawn Of Darkness!";
             endText.gameObject.SetActive(true);
         }
+
+        if (endSound && audioSource)
+            audioSource.PlayOneShot(endSound);
     }
 
     void triggerAnimation()
     {
-        
+        if (broAnimator)
             broAnimator.SetTrigger("ScenePlay");
-        
     }
 
     void OnTriggerEnter(Collider other)
@@ -61,6 +66,7 @@ public class BrotherEndSequence : MonoBehaviour
         if (!messageShown && other.CompareTag("Player"))
         {
             playerNearby = true;
+
             if (promptText)
             {
                 promptText.text = "Press E to interact";
@@ -74,7 +80,8 @@ public class BrotherEndSequence : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = false;
-            if (promptText) promptText.gameObject.SetActive(false);
+            if (promptText)
+                promptText.gameObject.SetActive(false);
         }
     }
 }

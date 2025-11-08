@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: tex_generator_01_d
+  m_Name: GeneratorAlbedo
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 2100000, guid: fc9e83b995ddf6b4e87c11d16d2ca0bf, type: 2}
   m_ModifiedSerializedProperties: 4

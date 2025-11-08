@@ -1,9 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
 [RequireComponent(typeof(Collider))]
-[RequireComponent(typeof(AudioSource))]
 public class PartItem : MonoBehaviour
 {
     public int partID;
@@ -12,20 +11,18 @@ public class PartItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI promptText;
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private GameObject pickupVFXPrefab;
+    [Range(0f, 1f)] public float pickupVolume = 1f;
 
-    private GeneratorPartsUI partsUI; 
+    private GeneratorPartsUI partsUI;
     private PlayerInputActions controls;
     private PlayerInventory nearbyInventory;
-    private AudioSource audioSource;
     private bool playerNearby;
 
     private void Awake()
     {
         controls = new PlayerInputActions();
-        audioSource = GetComponent<AudioSource>();
         HidePrompt();
 
-        
         if (partsUI == null)
             partsUI = FindFirstObjectByType<GeneratorPartsUI>();
     }
@@ -75,13 +72,26 @@ public class PartItem : MonoBehaviour
         }
 
         if (partsUI != null)
-            partsUI.ShowPart(partID); 
+            partsUI.ShowPart(partID);
 
-        if (audioSource && pickupSound)
-            audioSource.PlayOneShot(pickupSound);
+        
+        if (pickupSound)
+        {
+            GameObject tempAudio = new GameObject("Temp2DSound");
+            AudioSource aSrc = tempAudio.AddComponent<AudioSource>();
+            aSrc.clip = pickupSound;
+            aSrc.volume = pickupVolume;
+            aSrc.spatialBlend = 0f; 
+            aSrc.Play();
+            Destroy(tempAudio, pickupSound.length);
+        }
 
+      
         if (pickupVFXPrefab)
-            Instantiate(pickupVFXPrefab, transform.position, Quaternion.identity);
+        {
+            var fx = Instantiate(pickupVFXPrefab, transform.position, Quaternion.identity);
+            Destroy(fx, 3f); 
+        }
 
         HidePrompt();
         gameObject.SetActive(false);
