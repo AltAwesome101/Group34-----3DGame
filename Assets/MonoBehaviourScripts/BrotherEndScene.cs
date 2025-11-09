@@ -53,7 +53,7 @@ public class BrotherEndSequence : MonoBehaviour
         if (endText)
         {
             triggerAnimation();
-            endText.text = "Congratulations! You reached the end of Drawn Of Darkness!";
+            endText.text = "Congratulations! You reached the end of Drawn To Darkness!";
             endText.gameObject.SetActive(true);
         }
 

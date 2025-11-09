@@ -19,7 +19,7 @@ public class Destroyable : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
 
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0f; // make sound 2D so it's always heard
+        audioSource.spatialBlend = 0f; 
     }
 
     public void RegisterHit()
@@ -43,7 +43,6 @@ public class Destroyable : MonoBehaviour
 
         if (breakSound != null)
         {
-            // Detach a temporary AudioSource to finish playing before destruction
             AudioSource tempAudio = new GameObject("TempAudio").AddComponent<AudioSource>();
             tempAudio.transform.position = transform.position;
             tempAudio.clip = breakSound;

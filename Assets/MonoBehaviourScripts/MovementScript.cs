@@ -16,8 +16,8 @@ public class MovementScript : MonoBehaviour
 
     [Header("Collision Audio")]
     public AudioClip collisionSound;
-    public float collisionThreshold = 1f; // seconds
-    public float capsuleYOffset = 0.2f;    // vertical offset for capsule cast
+    public float collisionThreshold = 1f; 
+    public float capsuleYOffset = 0.2f;   
 
     private bool isCrouching = false;
     private bool isSprinting = false;
@@ -51,7 +51,7 @@ public class MovementScript : MonoBehaviour
         col = GetComponent<CapsuleCollider>();
         audioSource = GetComponent<AudioSource>();
 
-        rb.freezeRotation = true; // prevent tipping over
+        rb.freezeRotation = true; 
         transform.localScale = normalScale;
     }
 
@@ -67,8 +67,8 @@ public class MovementScript : MonoBehaviour
         Vector3 bottom = col.bounds.center - Vector3.up * (col.height / 2 - col.radius) + Vector3.up * capsuleYOffset;
         Vector3 top = col.bounds.center + Vector3.up * (col.height / 2 - col.radius) + Vector3.up * capsuleYOffset;
 
-        float skin = 0.02f;                        // distance buffer
-        float radius = col.radius * 0.95f;         // slightly shrink for smoother edges
+        float skin = 0.02f;                       
+        float radius = col.radius * 0.95f;         
 
         bool hit = Physics.CapsuleCast(
             top,

@@ -1,3 +1,9 @@
+//Title: Controlling Zones
+//Author: Walter Davis
+//Date: 09-02-2020
+//Code Version: New-input System
+//Availability: https://www.perforce.com/blog/vcs/game-asset-recycling
+
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -51,9 +57,8 @@ public class ValveInteract_WithShaft : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         if (handleTransform == null)
-            handleTransform = transform; // fallback
+            handleTransform = transform; 
 
-        // cache local rotation for local-mode
         localStartRotation = handleTransform.localRotation;
         localTargetRotation = localStartRotation * Quaternion.AngleAxis(handleCloseAngle * (invertDirection ? -1f : 1f), Vector3.up);
 
@@ -62,11 +67,10 @@ public class ValveInteract_WithShaft : MonoBehaviour
 
     private void OnValidate()
     {
-        // Keep helpful editor updates: recompute localTargetRotation using the handle's local "up"
+       
         if (handleTransform != null)
         {
             localStartRotation = handleTransform.localRotation;
-            // For local mode, rotate around local up — but we won't use this if using shaft mode
             localTargetRotation = localStartRotation * Quaternion.AngleAxis(handleCloseAngle * (invertDirection ? -1f : 1f), Vector3.up);
         }
     }
@@ -96,14 +100,12 @@ public class ValveInteract_WithShaft : MonoBehaviour
 
         if (audioSource != null && closeSound != null) audioSource.PlayOneShot(closeSound);
 
-        // Start rotation coroutine. Select method based on useShaftRotate
         if (useShaftRotate && shaftTransform != null)
         {
             StartCoroutine(RotateAroundShaftCoroutine(handleCloseAngle * (invertDirection ? -1f : 1f), rotateDuration));
         }
         else
         {
-            // Local rotation fallback
             StartCoroutine(RotateLocalCoroutine(handleCloseAngle * (invertDirection ? -1f : 1f), rotateDuration));
         }
 
@@ -114,7 +116,6 @@ public class ValveInteract_WithShaft : MonoBehaviour
         }
     }
 
-    // Smooth local rotation (rotates handle.localRotation)
     private IEnumerator RotateLocalCoroutine(float totalAngle, float duration)
     {
         if (handleTransform == null) yield break;
@@ -131,16 +132,12 @@ public class ValveInteract_WithShaft : MonoBehaviour
         handleTransform.localRotation = to;
     }
 
-    // Rotate around shaft transform's axis in world space, using Transform.RotateAround each frame
     private IEnumerator RotateAroundShaftCoroutine(float totalAngleDegrees, float duration)
     {
         if (handleTransform == null || shaftTransform == null) yield break;
 
-        // Determine axis in world space (shaft's local up)
         Vector3 axisWorld = shaftTransform.TransformDirection(Vector3.up).normalized;
 
-        // We'll rotate the handle around shaftTransform.position by incremental angles.
-        // To guarantee final angle precision, accumulate angle and do last step explicit.
         float elapsed = 0f;
         float accumulated = 0f;
         float sign = Mathf.Sign(totalAngleDegrees);
@@ -151,23 +148,15 @@ public class ValveInteract_WithShaft : MonoBehaviour
             float prevElapsed = elapsed;
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-
-            // Use ease (smoothstep) for nicer motion
             float easedT = t * t * (3f - 2f * t);
-
-            // compute target accumulated angle based on easedT
             float targetAccum = absTotal * easedT;
             float delta = targetAccum - accumulated;
             accumulated = targetAccum;
-
-            // apply rotation delta around world axis and shaft position
-            // Multiply by sign to get direction
             handleTransform.RotateAround(shaftTransform.position, axisWorld, delta * sign);
 
             yield return null;
         }
 
-        // final snap: ensure exactly full rotation
         float remaining = sign * (totalAngleDegrees) - sign * accumulated;
         if (Mathf.Abs(remaining) > 0.0001f)
         {

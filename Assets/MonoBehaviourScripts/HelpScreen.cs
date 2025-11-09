@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class HelpScreenManager : MonoBehaviour
 {
-    public RawImage helpImage; // Assign in Inspector
+    public RawImage helpImage; 
     private bool isHelpVisible = false;
 
     void Start()
@@ -13,7 +13,6 @@ public class HelpScreenManager : MonoBehaviour
             helpImage.gameObject.SetActive(false);
     }
 
-    // This gets called when linked in Player Input's Unity Events
     public void ToggleHelpScreen(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
