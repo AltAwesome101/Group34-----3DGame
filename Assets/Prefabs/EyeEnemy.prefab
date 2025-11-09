@@ -109,15 +109,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3
+      value: -11.53
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.1098027
+      value: -4.109802
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -46.86
+      value: -18.63
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -246,7 +246,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1103644139812474870}
   serializedVersion: 4
-  m_Mass: 2
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -274,7 +274,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1103644139812474870}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1.37
+  m_Radius: 1.75
   m_Speed: 3.5
   m_Acceleration: 3
   avoidancePriority: 50
@@ -326,11 +326,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  detectionRadius: 8.65
+  detectionRadius: 8
   stopChasingRadius: 20
-  attackRange: 3.5
+  attackRange: 3
   attackCooldown: 0.5
-  patrolRadius: 3.06
+  patrolRadius: 2.02
   patrolWaitTime: 2
   swayDistance: 0.3
   swaySpeed: 0.5
