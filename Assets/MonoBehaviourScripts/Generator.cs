@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿//Title: Using Assets as Return Points
+//Author: bizdev@ilogos.biz
+//Date: 19-05-2020
+//Code Version: New-input System
+//Availability: https://ilogos.biz/game-design-assets-overview/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;

@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿//Title: Setting up an Inventory system with scriptable objects in unity
+//Author: Jared Amlin
+//Date: 04-03-2021
+//Code Version: New-input System
+//Availability: https://jaredamlin.medium.com/setting-up-an-inventory-system-with-scriptable-objects-in-unity-176599ca49bb
+
+using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
@@ -14,8 +20,11 @@ public class PartItem : MonoBehaviour
     [Range(0f, 1f)] public float pickupVolume = 1f;
 
     private GeneratorPartsUI partsUI;
+
     private PlayerInputActions controls;
+
     private PlayerInventory nearbyInventory;
+
     private bool playerNearby;
 
     private void Awake()
@@ -24,7 +33,9 @@ public class PartItem : MonoBehaviour
         HidePrompt();
 
         if (partsUI == null)
+        {
             partsUI = FindFirstObjectByType<GeneratorPartsUI>();
+        }
     }
 
     private void OnEnable()
@@ -45,7 +56,9 @@ public class PartItem : MonoBehaviour
 
         nearbyInventory = other.GetComponent<PlayerInventory>();
         if (nearbyInventory == null)
+        {
             nearbyInventory = FindFirstObjectByType<PlayerInventory>();
+        }
 
         playerNearby = true;
         ShowPrompt("Press E to pick up part");
@@ -63,7 +76,9 @@ public class PartItem : MonoBehaviour
     private void OnInteract(InputAction.CallbackContext ctx)
     {
         if (!playerNearby || nearbyInventory == null)
+        {
             return;
+        }
 
         if (!nearbyInventory.AddPart(partID))
         {
@@ -72,7 +87,9 @@ public class PartItem : MonoBehaviour
         }
 
         if (partsUI != null)
+        {
             partsUI.ShowPart(partID);
+        }
 
         
         if (pickupSound)

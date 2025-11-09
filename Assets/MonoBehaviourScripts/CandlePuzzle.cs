@@ -1,3 +1,9 @@
+//Title: Designing Video Game Puzzles
+//Author: Damien Allan
+//Date: 29-10-2023
+//Code Version: New-input System
+//Availability: https://www.gamedeveloper.com/design/designing-video-game-puzzles
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;

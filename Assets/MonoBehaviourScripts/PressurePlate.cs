@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿//Title: Pressure Puzzle
+//Author: Lain Couper
+//Date: 24-10-2014
+//Code Version: New-input System
+//Availability: https://www.reddit.com/r/Unity3D/comments/tgze94/puzzle_hub_all_made_in_unitys_ui_system/
+
+using UnityEngine;
 using System;
 
 [RequireComponent(typeof(Collider))]
@@ -18,7 +24,9 @@ public class PressurePlate : MonoBehaviour
     [Range(0f, 1f)] public float audioVolume = 1f;
 
     private bool isPressed = false;
+
     private AudioSource audioSource;
+
     private int pushableLayer;
 
     public bool IsPressed => isPressed;

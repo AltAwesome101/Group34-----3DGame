@@ -109,15 +109,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -11.53
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.109802
+      value: -4.1098027
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -18.63
+      value: -46.86
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -326,17 +326,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  detectionRadius: 10
+  detectionRadius: 8.65
   stopChasingRadius: 20
-  patrolRadius: 5
-  patrolWaitTime: 3
+  attackRange: 3.5
+  attackCooldown: 0.5
+  patrolRadius: 3.06
+  patrolWaitTime: 2
   swayDistance: 0.3
   swaySpeed: 0.5
   dodgeChance: 0.6
-  pathUpdateRate: 0.25
-  hoverAmplitude: 0.2
-  hoverFrequency: 2
+  reactionDodgeChance: 0.7
   aggroSound: {fileID: 8300000, guid: b42cfb436df64ad4292cdc06edd70312, type: 3}
+  attackSound: {fileID: 8300000, guid: 496f03edb3f597a49a17445f568613c7, type: 3}
+  hurtSound: {fileID: 8300000, guid: 5f12e83e0d4b02e4880cc5790b6f1577, type: 3}
 --- !u!82 &3996054936390043514
 AudioSource:
   m_ObjectHideFlags: 0

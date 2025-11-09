@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿//Title: Memorable game endings
+//Author: Reed Rothchild
+//Date: 18-02-2017
+//Code Version: New-input System
+//Availability:https://www.videogamesage.com/forums/topic/4727-memorable-game-endings/
+
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using TMPro;

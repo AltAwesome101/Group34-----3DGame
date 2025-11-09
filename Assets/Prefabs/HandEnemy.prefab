@@ -113,15 +113,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -33.507874
+      value: -27.34338
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.1097975
+      value: -4.1097965
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.3373194
+      value: 13.952897
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b04c17036e453840be920f42391b1eb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -396,9 +396,9 @@ NavMeshAgent:
   m_GameObject: {fileID: 2232452972781035215}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 5.02
   m_Speed: 3
-  m_Acceleration: 1.5
+  m_Acceleration: 2
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -425,8 +425,8 @@ MonoBehaviour:
   stopChasingRadius: 15
   pathUpdateRate: 0.25
   patrolRadius: 10
-  patrolWaitTime: 3
-  kick: 2
+  patrolWaitTime: 2
+  kick: 1.17
   knockbackTime: 0.8
   aggroSound: {fileID: 8300000, guid: 7e1dee88017605442b8f83449109961a, type: 3}
 --- !u!114 &3654879607513008140
@@ -476,7 +476,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.9237175
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

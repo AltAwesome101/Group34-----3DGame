@@ -1,3 +1,9 @@
+//Title: Intuitive Guide
+//Author: Bhavick Nagar
+//Date: 20-11-2023
+//Code Version: New-input System
+//Availability: https://indieklem.com/9-creating-an-intuitive-in-game-menu/
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
