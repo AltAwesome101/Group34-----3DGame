@@ -41,7 +41,7 @@ public class KeyPickup : MonoBehaviour
         InventoryManager inventory = other.GetComponent<InventoryManager>();
         if (inventory == null)
         {
-            inventory = FindObjectOfType<InventoryManager>();
+            inventory = FindFirstObjectByType<InventoryManager>();
         }
 
         if (inventory != null)

@@ -109,7 +109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 57.13
+      value: -11.53
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -117,7 +117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -52.62
+      value: -18.63
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 309dfd8272dc6e740821cf8dce4905e9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -277,7 +277,7 @@ NavMeshAgent:
   m_Radius: 1.37
   m_Speed: 3.5
   m_Acceleration: 3
-  avoidancePriority: 48
+  avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -332,7 +332,7 @@ MonoBehaviour:
   patrolWaitTime: 3
   swayDistance: 0.3
   swaySpeed: 0.5
-  dodgeChance: 0.5
+  dodgeChance: 0.6
   pathUpdateRate: 0.25
   hoverAmplitude: 0.2
   hoverFrequency: 2

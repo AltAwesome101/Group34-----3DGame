@@ -1,9 +1,9 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal; // Required for blur/post-processing
+using UnityEngine.Rendering.Universal; 
 
 [RequireComponent(typeof(AudioSource))]
 public class DamagePlayer : MonoBehaviour
@@ -19,7 +19,7 @@ public class DamagePlayer : MonoBehaviour
     public float fallThreshold = -7f;
 
     [Header("Damage Feedback")]
-    public Image damageFlashImage; // Red overlay
+    public Image damageFlashImage;
     public float flashDuration = 0.3f;
     public Color flashColor = new Color(1f, 0f, 0f, 0.6f);
 
@@ -33,20 +33,29 @@ public class DamagePlayer : MonoBehaviour
     public float lowHealthThreshold = 30f;
     public float heartbeatInterval = 1.2f;
 
-    public Volume postProcessingVolume; // Assign URP Volume with DepthOfField or Bloom
+    public Volume postProcessingVolume;
     private DepthOfField depthOfField;
 
     [Header("Audio")]
     public AudioClip hurtSound;
     public AudioClip deathSound;
+    public float hurtSoundCooldown = 0.4f; 
 
     private AudioSource audioSource;
+
     private Rigidbody rb;
+
     private bool isDead = false;
+
     private bool isLowHealthActive = false;
+
     private Coroutine flashRoutine;
+
     private Coroutine shakeRoutine;
+
     private Coroutine heartbeatRoutine;
+
+    private float lastHurtTime = 0f;
 
     private void Start()
     {
@@ -70,7 +79,6 @@ public class DamagePlayer : MonoBehaviour
         if (!isDead && transform.position.y < fallThreshold)
             Die();
 
-        // Check for low health heartbeat trigger
         if (!isDead && health <= lowHealthThreshold && !isLowHealthActive)
         {
             isLowHealthActive = true;
@@ -84,9 +92,8 @@ public class DamagePlayer : MonoBehaviour
         }
     }
 
-    // -----------------------------
     // DAMAGE AND HEALING
-    // -----------------------------
+   
     public void ApplyDamage(int damage)
     {
         if (isDead) return;
@@ -97,8 +104,13 @@ public class DamagePlayer : MonoBehaviour
 
         if (damage > 0)
         {
-            if (hurtSound != null)
-                audioSource.PlayOneShot(hurtSound);
+            if (hurtSound != null && Time.time - lastHurtTime >= hurtSoundCooldown)
+            {
+                lastHurtTime = Time.time;
+                audioSource.clip = hurtSound;
+                audioSource.spatialBlend = 0f;
+                audioSource.Play();
+            }
 
             TriggerDamageFlash();
 
@@ -123,24 +135,27 @@ public class DamagePlayer : MonoBehaviour
         UpdateUI();
     }
 
-    // -----------------------------
     // DEATH AND RESPAWN
-    // -----------------------------
+ 
     void Die()
     {
         isDead = true;
 
-        // Stop low health heartbeat
         if (heartbeatRoutine != null)
+        {
             StopCoroutine(heartbeatRoutine);
+        }
         ResetLowHealthVisuals();
 
         if (damageFlashImage != null)
-            damageFlashImage.gameObject.SetActive(false); // Hide overlay when dead
+        {
+            damageFlashImage.gameObject.SetActive(false);
+        }
 
         if (deathSound != null)
+        {
             audioSource.PlayOneShot(deathSound);
-
+        }
         ShowPanel();
         Invoke(nameof(Respawn), 3f);
     }
@@ -154,39 +169,47 @@ public class DamagePlayer : MonoBehaviour
         HidePanel();
 
         if (damageFlashImage != null)
-            damageFlashImage.gameObject.SetActive(true); // Reactivate overlay on respawn
+            damageFlashImage.gameObject.SetActive(true); 
     }
 
-    // -----------------------------
     // UI HANDLING
-    // -----------------------------
+  
     void UpdateUI()
     {
         if (healthPanel != null)
+        {
             healthPanel.text = "Health: " + health;
+        }
     }
 
     void ShowPanel()
     {
         if (roundCompletePanel != null)
+        {
             roundCompletePanel.SetActive(true);
+        }
     }
 
     void HidePanel()
     {
         if (roundCompletePanel != null)
+        {
             roundCompletePanel.SetActive(false);
+        }
     }
 
-    // -----------------------------
     // DAMAGE FLASH
-    // -----------------------------
     void TriggerDamageFlash()
     {
-        if (damageFlashImage == null) return;
+        if (damageFlashImage == null)
+        {
+            return;
+        }
 
         if (flashRoutine != null)
+        {
             StopCoroutine(flashRoutine);
+        }
 
         flashRoutine = StartCoroutine(DamageFlashRoutine());
     }
@@ -204,9 +227,8 @@ public class DamagePlayer : MonoBehaviour
         damageFlashImage.color = Color.clear;
     }
 
-    // -----------------------------
     // CAMERA SHAKE
-    // -----------------------------
+  
     IEnumerator CameraShake()
     {
         Vector3 originalPos = playerCamera.transform.localPosition;
@@ -224,18 +246,18 @@ public class DamagePlayer : MonoBehaviour
         playerCamera.transform.localPosition = originalPos;
     }
 
-    // -----------------------------
     // LOW HEALTH EFFECTS
-    // -----------------------------
+   
     IEnumerator LowHealthEffects()
     {
         while (true)
         {
-            // Play heartbeat sound
-            if (heartbeatSound != null && !audioSource.isPlaying)
-                audioSource.PlayOneShot(heartbeatSound);
 
-            // Pulse screen slightly
+            if (heartbeatSound != null && !audioSource.isPlaying)
+            {
+                audioSource.PlayOneShot(heartbeatSound);
+            }
+
             if (damageFlashImage != null)
             {
                 damageFlashImage.color = new Color(1f, 0f, 0f, 0.3f);
@@ -243,24 +265,32 @@ public class DamagePlayer : MonoBehaviour
                 damageFlashImage.color = Color.clear;
             }
 
-            // Slight blur to simulate dizziness
+
             if (depthOfField != null)
+            {
                 depthOfField.gaussianStart.Override(0.5f);
+            }
 
             yield return new WaitForSeconds(heartbeatInterval);
 
             if (depthOfField != null)
+            {
                 depthOfField.gaussianStart.Override(0f);
+            }
         }
     }
 
     void ResetLowHealthVisuals()
     {
         if (damageFlashImage != null)
+        {
             damageFlashImage.color = Color.clear;
+        }
 
         if (depthOfField != null)
+        {
             depthOfField.gaussianStart.Override(0f);
+        }
     }
 
     public void OnWaveComplete()

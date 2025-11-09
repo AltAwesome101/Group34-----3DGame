@@ -1,6 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
 public class BrotherEndSequence : MonoBehaviour
@@ -11,7 +13,7 @@ public class BrotherEndSequence : MonoBehaviour
     public Animator broAnimator;
 
     [Header("Audio")]
-    public AudioClip endSound;  
+    public AudioClip endSound;
     private AudioSource audioSource;
 
     private bool playerNearby;
@@ -19,12 +21,10 @@ public class BrotherEndSequence : MonoBehaviour
 
     void Start()
     {
-
+ 
         if (promptText) promptText.gameObject.SetActive(false);
         if (endText) endText.gameObject.SetActive(false);
-
         broAnimator = GetComponent<Animator>();
-
         audioSource = GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
     }
@@ -47,12 +47,14 @@ public class BrotherEndSequence : MonoBehaviour
         if (endText)
         {
             triggerAnimation();
-            endText.text = "Congratulations! You reached the end of Dawn Of Darkness!";
+            endText.text = "Congratulations! You reached the end of Drawn Of Darkness!";
             endText.gameObject.SetActive(true);
         }
 
         if (endSound && audioSource)
             audioSource.PlayOneShot(endSound);
+
+        StartCoroutine(ReturnToMainMenuAfterDelay(5f));
     }
 
     void triggerAnimation()
@@ -84,4 +86,16 @@ public class BrotherEndSequence : MonoBehaviour
                 promptText.gameObject.SetActive(false);
         }
     }
+
+    private IEnumerator ReturnToMainMenuAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+        yield return null;
+        Resources.UnloadUnusedAssets();
+        System.GC.Collect();
+    }
+
 }

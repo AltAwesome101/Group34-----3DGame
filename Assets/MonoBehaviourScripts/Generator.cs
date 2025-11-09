@@ -22,21 +22,28 @@ public class GeneratorInteract : MonoBehaviour
     [SerializeField] private TextMeshProUGUI progressText;
     [SerializeField] private AudioClip placeSound;
     [SerializeField] private AudioClip completeSound;
-    [SerializeField] private AudioClip holdLoopSound;   // New looping audio for holding
+    [SerializeField] private AudioClip holdLoopSound;  
 
     [Header("Hold Interaction")]
     [SerializeField] private GeneratorHoldUI holdUI;
     [SerializeField] private float holdTime = 2f;
 
     private GeneratorPartsUI partsUI;
+
     private List<int> remainingParts;
+
     private int placedCount;
+
     private bool playerNearby;
+
     private PlayerInventory nearbyInventory;
+
     private AudioSource audioSource;
 
     private PlayerInputActions controls;
+
     private bool isHolding;
+
     private float holdProgress;
 
     private void Awake()
@@ -44,7 +51,7 @@ public class GeneratorInteract : MonoBehaviour
         controls = new PlayerInputActions();
         audioSource = GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0f; // 🔹 Make all audio 2D
+        audioSource.spatialBlend = 0f; 
         audioSource.loop = false;
 
         remainingParts = new List<int>(requiredPartIDs);
@@ -107,7 +114,7 @@ public class GeneratorInteract : MonoBehaviour
             isHolding = true;
             holdProgress = 0;
 
-            // 🔹 Start looping hold sound if available
+          
             if (holdLoopSound != null)
             {
                 audioSource.clip = holdLoopSound;
@@ -126,7 +133,7 @@ public class GeneratorInteract : MonoBehaviour
 
         if (holdUI) holdUI.Show(false);
 
-        // 🔹 Stop hold loop audio
+     
         if (audioSource.isPlaying && audioSource.loop)
         {
             audioSource.Stop();
@@ -175,7 +182,6 @@ public class GeneratorInteract : MonoBehaviour
 
         nearbyInventory.RemoveHeldPart();
 
-        // 🔹 Play place sound (2D)
         if (audioSource && placeSound)
             audioSource.PlayOneShot(placeSound);
 
@@ -264,7 +270,7 @@ public class GeneratorInteract : MonoBehaviour
 
     private void OnGeneratorComplete()
     {
-        // 🔹 Stop hold audio if still looping
+     
         if (audioSource.isPlaying && audioSource.loop)
         {
             audioSource.Stop();
@@ -272,7 +278,7 @@ public class GeneratorInteract : MonoBehaviour
             audioSource.clip = null;
         }
 
-        // 🔹 Play complete sound (2D)
+    
         if (audioSource && completeSound)
             audioSource.PlayOneShot(completeSound);
 

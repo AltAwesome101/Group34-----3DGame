@@ -57,7 +57,7 @@ public class EnermyHealth : MonoBehaviour
 
         
         if (lastHitWasMelee)
-            FindObjectOfType<NPC>()?.RegisterMeleeKill();
+            FindFirstObjectByType<NPC>()?.RegisterMeleeKill();
 
         
         float delay = deathSound != null ? deathSound.length : 0f;
