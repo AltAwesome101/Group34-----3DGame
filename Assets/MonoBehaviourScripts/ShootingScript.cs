@@ -34,6 +34,9 @@ public class ShootingScript : MonoBehaviour
     [Tooltip("Total spread angle for shotgun pellets.")]
     public float shotgunSpreadAngle = 30f;
 
+    private AudioSource audioSource;
+    public AudioClip Shoot;
+
 
     private InventoryManager inventory;
 
@@ -47,7 +50,12 @@ public class ShootingScript : MonoBehaviour
 
     private void Awake()
     {
-        
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.spatialBlend = 1f;
+        audioSource.playOnAwake = false;
         input = new PlayerInputActions();
         input.Player.Shoot.performed += _ => TryFire();
         pool = new List<GameObject>(poolSize);
@@ -111,6 +119,10 @@ public class ShootingScript : MonoBehaviour
         bullet.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(dir));
         bullet.SetActive(false);
         bullet.SetActive(true);
+        if(audioSource != null)
+        {
+            audioSource.PlayOneShot(Shoot);
+        }
 
     }
 }
